@@ -125,6 +125,36 @@
     </div>
   </div>
 
+  <!-- Past & Deleted Events Archive -->
+  <div class="event-panel-wrap" style="margin-bottom: 40px;">
+    <div class="section-subhead" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+      <div>
+        <h2>Past &amp; Deleted Events Archive</h2>
+        <p style="font-size: 13px; color: var(--muted); margin-top: 4px;">View archived/deleted events and download student registration Excel sheets for past sessions.</p>
+      </div>
+      <button id="downloadAllArchivedExcelBtn" class="btn ghost btn-sm" style="padding: 8px 14px;" title="Export Excel containing registrations for all archived events">📊 Export All Archived Excel</button>
+    </div>
+    <div class="table-wrap" style="padding:0;">
+      <table id="archivedEventsTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Event Title</th>
+            <th>Event Date</th>
+            <th>Venue</th>
+            <th>Archived On</th>
+            <th>Registrations</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="archivedEventsBody"></tbody>
+      </table>
+      <div id="archivedEventsEmptyState" class="empty-state" style="display:none; padding: 30px;">
+        <p class="mono">No past or deleted events archived yet.</p>
+      </div>
+    </div>
+  </div>
+
   <!-- Registrations List -->
   <div class="section-subhead" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
     <h2>Student Registrations</h2>

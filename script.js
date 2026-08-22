@@ -83,10 +83,54 @@
     return events;
   }
 
+  const ARCHIVED_EVENTS_KEY = "stepSwing_archivedEvents";
+
+  function getArchivedEvents() {
+    try {
+      const raw = localStorage.getItem(ARCHIVED_EVENTS_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      console.error("Could not read archived events:", e);
+      return [];
+    }
+  }
+
+  function archiveEvent(eventId) {
+    const events = getEvents();
+    const idx = events.findIndex((e) => e.id === eventId);
+    if (idx !== -1) {
+      const [removed] = events.splice(idx, 1);
+      removed.archivedAt = new Date().toISOString();
+      localStorage.setItem(EVENTS_KEY, JSON.stringify(events));
+
+      const archived = getArchivedEvents();
+      archived.unshift(removed);
+      localStorage.setItem(ARCHIVED_EVENTS_KEY, JSON.stringify(archived));
+    }
+  }
+
+  function restoreArchivedEvent(eventId) {
+    const archived = getArchivedEvents();
+    const idx = archived.findIndex((e) => e.id === eventId);
+    if (idx !== -1) {
+      const [restored] = archived.splice(idx, 1);
+      delete restored.archivedAt;
+      localStorage.setItem(ARCHIVED_EVENTS_KEY, JSON.stringify(archived));
+
+      const events = getEvents();
+      events.unshift(restored);
+      localStorage.setItem(EVENTS_KEY, JSON.stringify(events));
+    }
+  }
+
+  function permanentlyDeleteArchivedEvent(eventId) {
+    let archived = getArchivedEvents();
+    archived = archived.filter((e) => e.id !== eventId);
+    localStorage.setItem(ARCHIVED_EVENTS_KEY, JSON.stringify(archived));
+  }
+
   function deleteEvent(eventId) {
-    let events = getEvents();
-    events = events.filter((e) => e.id !== eventId);
-    localStorage.setItem(EVENTS_KEY, JSON.stringify(events));
+    archiveEvent(eventId);
   }
 
   /* ---------------------------------------------------------
@@ -417,6 +461,7 @@
       dashboard.classList.add("show");
       renderEventsSection();
       renderEventsList();
+      renderArchivedEventsList();
       renderDashboard();
     }
 
@@ -480,6 +525,7 @@
         showToast(`Event "${title}" created and published!`);
         renderEventsSection();
         renderEventsList();
+        renderArchivedEventsList();
         renderDashboard();
       });
     }
@@ -491,6 +537,8 @@
       const eventsTable = document.getElementById("eventsTable");
       const events = getEvents();
       const registrations = getRegistrations();
+
+      populateFilterSelectOptions();
 
       if (!eventsBody) return;
       eventsBody.innerHTML = "";
@@ -525,11 +573,12 @@
           btn.addEventListener("click", function () {
             const id = this.dataset.id;
             const title = this.dataset.title || "this event";
-            if (confirm(`Are you sure you want to delete event "${title}"?`)) {
+            if (confirm(`Are you sure you want to delete event "${title}"? It will be moved to the Past & Deleted Archive.`)) {
               deleteEvent(id);
-              showToast(`Event "${title}" deleted.`);
+              showToast(`Event "${title}" moved to Past & Deleted Archive.`);
               renderEventsSection();
               renderEventsList();
+              renderArchivedEventsList();
               renderDashboard();
             }
           });
@@ -543,6 +592,125 @@
             exportToExcel(records, `StepAndSwing_Event_${title}`);
           });
         });
+      }
+    }
+
+    // ---- Render Past & Deleted Events Archive (President Portal) ----
+    function renderArchivedEventsList() {
+      const archivedBody = document.getElementById("archivedEventsBody");
+      const archivedEmptyState = document.getElementById("archivedEventsEmptyState");
+      const archivedTable = document.getElementById("archivedEventsTable");
+      const archivedEvents = getArchivedEvents();
+      const registrations = getRegistrations();
+
+      populateFilterSelectOptions();
+
+      if (!archivedBody) return;
+      archivedBody.innerHTML = "";
+
+      if (!archivedEvents.length) {
+        if (archivedTable) archivedTable.style.display = "none";
+        if (archivedEmptyState) archivedEmptyState.style.display = "block";
+      } else {
+        if (archivedTable) archivedTable.style.display = "table";
+        if (archivedEmptyState) archivedEmptyState.style.display = "none";
+
+        archivedEvents.forEach((evt, i) => {
+          const regCount = registrations.filter((r) => r.eventId === evt.id).length;
+          const dStr = evt.date ? new Date(evt.date).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' }) : "TBA";
+          const archStr = evt.archivedAt ? new Date(evt.archivedAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' }) : "—";
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${i + 1}</td>
+            <td><b>${escapeHtml(evt.title)}</b></td>
+            <td class="mono">${dStr}</td>
+            <td>${escapeHtml(evt.venue)}</td>
+            <td class="mono" style="font-size:11.5px; color:var(--muted);">${archStr}</td>
+            <td><b>${regCount}</b> registrations</td>
+            <td>
+              <button class="btn ghost btn-sm download-archived-evt-btn" data-id="${evt.id}" data-title="${escapeHtml(evt.title)}" title="Download Excel for this archived event">📊 Excel</button>
+              <button class="btn ghost btn-sm restore-archived-evt-btn" data-id="${evt.id}" data-title="${escapeHtml(evt.title)}" title="Restore event to active list">↺ Restore</button>
+              <button class="btn danger btn-sm perm-delete-archived-evt-btn" data-id="${evt.id}" data-title="${escapeHtml(evt.title)}" title="Permanently delete from archive">Delete</button>
+            </td>
+          `;
+          archivedBody.appendChild(tr);
+        });
+
+        archivedBody.querySelectorAll(".download-archived-evt-btn").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const id = this.dataset.id;
+            const title = this.dataset.title || "Archived_Event";
+            const records = getRegistrations().filter((r) => r.eventId === id);
+            exportToExcel(records, `StepAndSwing_ArchivedEvent_${title}`);
+          });
+        });
+
+        archivedBody.querySelectorAll(".restore-archived-evt-btn").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const id = this.dataset.id;
+            const title = this.dataset.title || "this event";
+            restoreArchivedEvent(id);
+            showToast(`Event "${title}" restored to Active Published Events.`);
+            renderEventsSection();
+            renderEventsList();
+            renderArchivedEventsList();
+            renderDashboard();
+          });
+        });
+
+        archivedBody.querySelectorAll(".perm-delete-archived-evt-btn").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const id = this.dataset.id;
+            const title = this.dataset.title || "this event";
+            if (confirm(`Permanently delete archived record for "${title}"? Registrations will remain saved.`)) {
+              permanentlyDeleteArchivedEvent(id);
+              showToast(`Archived event "${title}" deleted permanently.`);
+              renderArchivedEventsList();
+              renderDashboard();
+            }
+          });
+        });
+      }
+    }
+
+    const downloadAllArchivedExcelBtn = document.getElementById("downloadAllArchivedExcelBtn");
+    if (downloadAllArchivedExcelBtn) {
+      downloadAllArchivedExcelBtn.addEventListener("click", function () {
+        const archivedEvents = getArchivedEvents();
+        const archivedIds = new Set(archivedEvents.map((e) => e.id));
+        const records = getRegistrations().filter((r) => archivedIds.has(r.eventId));
+        exportToExcel(records, "StepAndSwing_All_Archived_Events");
+      });
+    }
+
+    function populateFilterSelectOptions() {
+      if (!filterSelect) return;
+      const currentVal = filterSelect.value || "all";
+      const activeEvents = getEvents();
+      const archivedEvents = getArchivedEvents();
+
+      let html = `<option value="all">All Registrations</option>`;
+      html += `<option value="general">General Membership</option>`;
+
+      if (activeEvents.length) {
+        html += `<optgroup label="Active Published Events">`;
+        activeEvents.forEach((e) => {
+          html += `<option value="${e.id}">${escapeHtml(e.title)}</option>`;
+        });
+        html += `</optgroup>`;
+      }
+
+      if (archivedEvents.length) {
+        html += `<optgroup label="Past &amp; Deleted Events">`;
+        archivedEvents.forEach((e) => {
+          html += `<option value="${e.id}">[Archived] ${escapeHtml(e.title)}</option>`;
+        });
+        html += `</optgroup>`;
+      }
+
+      filterSelect.innerHTML = html;
+      if ([...filterSelect.options].some((opt) => opt.value === currentVal)) {
+        filterSelect.value = currentVal;
       }
     }
 
