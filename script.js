@@ -721,9 +721,31 @@
   }
 
   /* ---------------------------------------------------------
+     Mobile Navigation Toggle
+     --------------------------------------------------------- */
+  function initMobileNav() {
+    const toggleBtn = document.getElementById("navToggle");
+    const navLinks = document.getElementById("navLinks");
+    if (!toggleBtn || !navLinks) return;
+
+    toggleBtn.addEventListener("click", function () {
+      toggleBtn.classList.toggle("active");
+      navLinks.classList.toggle("show");
+    });
+
+    navLinks.querySelectorAll("a").forEach((link) => {
+      link.addEventListener("click", function () {
+        toggleBtn.classList.remove("active");
+        navLinks.classList.remove("show");
+      });
+    });
+  }
+
+  /* ---------------------------------------------------------
      Boot
      --------------------------------------------------------- */
   document.addEventListener("DOMContentLoaded", function () {
+    initMobileNav();
     initScrollReveal();
     initRegistrationForm();
     initPresidentPortal();
