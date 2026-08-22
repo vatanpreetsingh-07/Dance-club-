@@ -543,29 +543,42 @@ tbody tr:hover{ background:var(--panel); }
   .dash-stats{ grid-template-columns:repeat(2,1fr); }
 }
 
-/* ---------- Floating Dancing Objects ---------- */
+/* ---------- Floating Dancing Objects & Scroll Parallax Styles ---------- */
 section { position: relative; overflow: hidden; }
 
 .dance-object {
   position: absolute;
   pointer-events: none;
-  opacity: 0.28;
-  transition: transform 0.1s linear, opacity 0.3s ease;
+  opacity: 0.45;
   will-change: transform;
-  filter: drop-shadow(0 0 10px rgba(212, 166, 58, 0.25));
-  z-index: 0;
+  filter: drop-shadow(0 0 16px rgba(212, 166, 58, 0.45));
+  z-index: 1;
+  transition: opacity 0.3s ease;
 }
 .dance-object.gold { fill: var(--gold); stroke: var(--gold); color: var(--gold); }
-.dance-object.red { fill: var(--red); stroke: var(--red); color: var(--red); }
+.dance-object.red { fill: var(--red); stroke: var(--red); color: var(--red); filter: drop-shadow(0 0 16px rgba(184, 64, 44, 0.45)); }
 
 @keyframes danceFloat {
-  0%, 100% { transform: translateY(0) rotate(0deg); }
-  50% { transform: translateY(-16px) rotate(6deg); }
+  0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+  33% { transform: translateY(-22px) rotate(8deg) scale(1.08); }
+  66% { transform: translateY(12px) rotate(-6deg) scale(0.95); }
 }
 .dance-float {
-  animation: danceFloat 4.2s ease-in-out infinite;
+  animation: danceFloat 5s ease-in-out infinite;
+}
+
+/* Hardware accelerated smooth motion for scroll-parallax elements */
+.hero h1, .hero .trail, .hero .lede, .hero .actions,
+.section-head, .style-card, .stat, .form-panel {
+  will-change: transform;
+  transition: transform 0.15s cubic-bezier(0.1, 0.9, 0.2, 1);
+}
+
+.style-card:hover {
+  transform: translateY(-8px) scale(1.02) !important;
+  box-shadow: 0 15px 35px rgba(212, 166, 58, 0.15);
 }
 
 @media (max-width: 768px) {
-  .dance-object { opacity: 0.15; scale: 0.7; }
+  .dance-object { opacity: 0.25; scale: 0.7; }
 }

@@ -79,36 +79,104 @@
       }
     }
 
-    // Scroll progress bar
+    // Scroll progress bar & Back-to-Top elements
     const progressEl = document.getElementById("scrollProgress");
     const backToTopBtn = document.getElementById("backToTop");
 
-    window.addEventListener("scroll", function () {
+    let ticking = false;
+
+    function onScrollUpdate() {
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
-      const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-      
+      const viewportHeight = window.innerHeight;
+      const docHeight = document.documentElement.scrollHeight - viewportHeight;
+
+      // 1. Progress Bar
       if (progressEl && docHeight > 0) {
-        const scrolled = (scrollTop / docHeight) * 100;
-        progressEl.style.width = scrolled + "%";
+        progressEl.style.width = ((scrollTop / docHeight) * 100) + "%";
       }
 
+      // 2. Back to top button
       if (backToTopBtn) {
-        if (scrollTop > 300) {
-          backToTopBtn.classList.add("show");
-        } else {
-          backToTopBtn.classList.remove("show");
+        backToTopBtn.classList.toggle("show", scrollTop > 300);
+      }
+
+      // 3. High-intensity Parallax for Dancing Objects
+      const danceObjects = document.querySelectorAll(".dance-object");
+      danceObjects.forEach((obj, idx) => {
+        const baseSpeed = parseFloat(obj.dataset.speed || "0.3");
+        const baseRot = parseFloat(obj.dataset.rotate || "0.08");
+        const speedMultiplier = 2.4; 
+        const yPos = scrollTop * baseSpeed * speedMultiplier;
+        const rot = scrollTop * baseRot * 2.8;
+        const pulse = 1 + Math.sin(scrollTop * 0.005 + idx) * 0.15;
+        obj.style.transform = `translate3d(0, ${yPos}px, 0) rotate(${rot}deg) scale(${pulse})`;
+      });
+
+      // 4. Hero Section Motion
+      const heroH1 = document.querySelector(".hero h1");
+      const heroTrail = document.querySelector(".hero .trail");
+      const heroLede = document.querySelector(".hero .lede");
+      if (heroH1) {
+        heroH1.style.transform = `translate3d(0, ${scrollTop * 0.28}px, 0) scale(${Math.max(0.85, 1 - scrollTop * 0.0004)})`;
+      }
+      if (heroTrail) {
+        heroTrail.style.transform = `translate3d(${Math.sin(scrollTop * 0.008) * 35}px, ${scrollTop * 0.16}px, 0)`;
+      }
+      if (heroLede) {
+        heroLede.style.transform = `translate3d(0, ${scrollTop * 0.18}px, 0)`;
+      }
+
+      // 5. Section Headers Parallax Motion
+      const sectionHeads = document.querySelectorAll(".section-head");
+      sectionHeads.forEach((head) => {
+        const rect = head.getBoundingClientRect();
+        if (rect.top < viewportHeight && rect.bottom > 0) {
+          const dist = (rect.top - viewportHeight / 2) * -0.06;
+          head.style.transform = `translate3d(0, ${dist}px, 0)`;
+        }
+      });
+
+      // 6. Style Cards Floating Motion on Scroll
+      const styleCards = document.querySelectorAll(".style-card");
+      styleCards.forEach((card, idx) => {
+        const rect = card.getBoundingClientRect();
+        if (rect.top < viewportHeight && rect.bottom > 0) {
+          const dir = idx % 2 === 0 ? 1 : -1;
+          const dist = (rect.top - viewportHeight / 2) * 0.07 * dir;
+          const rot = (rect.top - viewportHeight / 2) * 0.015 * dir;
+          card.style.transform = `translate3d(0, ${dist}px, 0) rotate(${rot}deg)`;
+        }
+      });
+
+      // 7. Stat Items Sway on Scroll
+      const stats = document.querySelectorAll(".stat");
+      stats.forEach((stat, idx) => {
+        const rect = stat.getBoundingClientRect();
+        if (rect.top < viewportHeight && rect.bottom > 0) {
+          const offsetX = (idx % 2 === 0 ? 12 : -12) * Math.sin(scrollTop * 0.006);
+          const offsetY = (rect.top - viewportHeight / 2) * -0.05;
+          stat.style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0)`;
+        }
+      });
+
+      // 8. Registration Form Panel Floating Lift
+      const formPanel = document.querySelector(".form-panel");
+      if (formPanel) {
+        const rect = formPanel.getBoundingClientRect();
+        if (rect.top < viewportHeight && rect.bottom > 0) {
+          const dist = (rect.top - viewportHeight / 2) * -0.05;
+          formPanel.style.transform = `translate3d(0, ${dist}px, 0)`;
         }
       }
 
-      // Parallax movement for floating dancing objects
-      const danceObjects = document.querySelectorAll(".dance-object");
-      danceObjects.forEach((obj) => {
-        const speed = parseFloat(obj.dataset.speed || "0.2");
-        const rotFactor = parseFloat(obj.dataset.rotate || "0.05");
-        const yPos = scrollTop * speed;
-        const rot = scrollTop * rotFactor;
-        obj.style.transform = `translate3d(0, ${yPos}px, 0) rotate(${rot}deg)`;
-      });
+      ticking = false;
+    }
+
+    window.addEventListener("scroll", function () {
+      if (!ticking) {
+        window.requestAnimationFrame(onScrollUpdate);
+        ticking = true;
+      }
     });
 
     if (backToTopBtn) {
