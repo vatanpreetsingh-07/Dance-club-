@@ -195,7 +195,49 @@
   </div>
 </div>
 
+<!-- Floating Back To Top Button -->
+<button id="backToTop" class="back-to-top" aria-label="Back to top">↑</button>
+
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<!-- Edit Event Modal Overlay -->
+<div id="editEventModal" class="modal-overlay" style="display:none;">
+  <div class="modal-card">
+    <div class="modal-head">
+      <h3>Edit Event Details</h3>
+      <button type="button" class="modal-close" id="closeEditModalBtn">&times;</button>
+    </div>
+    <form id="editEventForm" class="form-panel" style="padding: 24px; border:none; background:transparent;" autocomplete="off">
+      <input type="hidden" id="editEventId" name="id">
+      <div class="form-grid">
+        <div class="field" data-field="title">
+          <label for="editEventTitle">Event Title *</label>
+          <input type="text" id="editEventTitle" name="title" required>
+        </div>
+        <div class="field" data-field="date">
+          <label for="editEventDate">Date &amp; Time *</label>
+          <input type="datetime-local" id="editEventDate" name="date" required>
+        </div>
+        <div class="field" data-field="venue">
+          <label for="editEventVenue">Venue / Location *</label>
+          <input type="text" id="editEventVenue" name="venue" required>
+        </div>
+        <div class="field" data-field="category">
+          <label for="editEventCategory">Category</label>
+          <input type="text" id="editEventCategory" name="category">
+        </div>
+        <div class="field full" data-field="description">
+          <label for="editEventDesc">Event Description</label>
+          <textarea id="editEventDesc" name="description" style="min-height: 80px;"></textarea>
+        </div>
+      </div>
+      <div style="margin-top: 24px; display:flex; gap:12px; justify-content:flex-end;">
+        <button type="button" id="cancelEditBtn" class="btn ghost">Cancel</button>
+        <button type="submit" class="btn">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</div>
 
 <script src="script.js"></script>
 </body>

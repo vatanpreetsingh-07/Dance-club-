@@ -553,10 +553,19 @@
             <td><b>${regCount}</b> registrations</td>
             <td>
               <button class="btn ghost btn-sm download-evt-btn" data-id="${evt.id}" data-title="${escapeHtml(evt.title)}" title="Download Excel for this event only">📊 Excel</button>
+              <button class="btn ghost btn-sm edit-evt-btn" data-id="${evt.id}" title="Edit event details">✏️ Edit</button>
               <button class="btn danger btn-sm delete-evt-btn" data-id="${evt.id}" data-title="${escapeHtml(evt.title)}">Delete</button>
             </td>
           `;
           eventsBody.appendChild(tr);
+        });
+
+        eventsBody.querySelectorAll(".edit-evt-btn").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const id = this.dataset.id;
+            const target = getEvents().find((e) => e.id === id);
+            if (target) openEditModal(target);
+          });
         });
 
         eventsBody.querySelectorAll(".delete-evt-btn").forEach((btn) => {
@@ -619,11 +628,20 @@
             <td><b>${regCount}</b> registrations</td>
             <td>
               <button class="btn ghost btn-sm download-archived-evt-btn" data-id="${evt.id}" data-title="${escapeHtml(evt.title)}" title="Download Excel for this archived event">📊 Excel</button>
+              <button class="btn ghost btn-sm edit-archived-evt-btn" data-id="${evt.id}" title="Edit archived event details">✏️ Edit</button>
               <button class="btn ghost btn-sm restore-archived-evt-btn" data-id="${evt.id}" data-title="${escapeHtml(evt.title)}" title="Restore event to active list">↺ Restore</button>
               <button class="btn danger btn-sm perm-delete-archived-evt-btn" data-id="${evt.id}" data-title="${escapeHtml(evt.title)}" title="Permanently delete from archive">Delete</button>
             </td>
           `;
           archivedBody.appendChild(tr);
+        });
+
+        archivedBody.querySelectorAll(".edit-archived-evt-btn").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const id = this.dataset.id;
+            const target = getArchivedEvents().find((e) => e.id === id);
+            if (target) openEditModal(target);
+          });
         });
 
         archivedBody.querySelectorAll(".download-archived-evt-btn").forEach((btn) => {
@@ -661,6 +679,100 @@
           });
         });
       }
+    }
+
+    // ---- Edit Event Modal Logic ----
+    const editModal = document.getElementById("editEventModal");
+    const editForm = document.getElementById("editEventForm");
+    const closeEditModalBtn = document.getElementById("closeEditModalBtn");
+    const cancelEditBtn = document.getElementById("cancelEditBtn");
+
+    function openEditModal(evt) {
+      if (!editModal || !editForm) return;
+      document.getElementById("editEventId").value = evt.id;
+      document.getElementById("editEventTitle").value = evt.title || "";
+      document.getElementById("editEventDate").value = evt.date ? new Date(evt.date).toISOString().slice(0, 16) : "";
+      document.getElementById("editEventVenue").value = evt.venue || "";
+      document.getElementById("editEventCategory").value = evt.category || "";
+      document.getElementById("editEventDesc").value = evt.description || "";
+      editModal.style.display = "flex";
+    }
+
+    function closeEditModal() {
+      if (editModal) editModal.style.display = "none";
+      if (editForm) editForm.reset();
+    }
+
+    if (closeEditModalBtn) closeEditModalBtn.addEventListener("click", closeEditModal);
+    if (cancelEditBtn) cancelEditBtn.addEventListener("click", closeEditModal);
+
+    if (editForm) {
+      editForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+        const id = document.getElementById("editEventId").value;
+        const title = document.getElementById("editEventTitle").value.trim();
+        const date = document.getElementById("editEventDate").value;
+        const venue = document.getElementById("editEventVenue").value.trim();
+        const category = document.getElementById("editEventCategory").value.trim();
+        const description = document.getElementById("editEventDesc").value.trim();
+
+        if (!title || !date || !venue) {
+          showToast("Please fill in Title, Date & Time, and Venue.", true);
+          return;
+        }
+
+        // Check active events
+        let activeEvents = getEvents();
+        const activeIdx = activeEvents.findIndex((e) => e.id === id);
+        if (activeIdx !== -1) {
+          activeEvents[activeIdx] = {
+            ...activeEvents[activeIdx],
+            title,
+            date,
+            venue,
+            category: category || "Club Event",
+            description,
+            updatedAt: new Date().toISOString(),
+          };
+          localStorage.setItem(EVENTS_KEY, JSON.stringify(activeEvents));
+        } else {
+          // Check archived events
+          let archivedEvents = getArchivedEvents();
+          const archIdx = archivedEvents.findIndex((e) => e.id === id);
+          if (archIdx !== -1) {
+            archivedEvents[archIdx] = {
+              ...archivedEvents[archIdx],
+              title,
+              date,
+              venue,
+              category: category || "Club Event",
+              description,
+              updatedAt: new Date().toISOString(),
+            };
+            localStorage.setItem(ARCHIVED_EVENTS_KEY, JSON.stringify(archivedEvents));
+          }
+        }
+
+        // Also update eventName in student registrations if matching eventId
+        let registrations = getRegistrations();
+        let updatedRegs = false;
+        registrations.forEach((r) => {
+          if (r.eventId === id) {
+            r.eventName = title;
+            updatedRegs = true;
+          }
+        });
+        if (updatedRegs) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(registrations));
+        }
+
+        closeEditModal();
+        showToast(`Event "${title}" updated successfully!`);
+        renderEventsSection();
+        renderEventsList();
+        renderArchivedEventsList();
+        renderDashboard();
+      });
     }
 
     const downloadAllArchivedExcelBtn = document.getElementById("downloadAllArchivedExcelBtn");
