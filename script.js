@@ -42,6 +42,25 @@
     return all;
   }
 
+  /* ---------------------------------------------------------
+     Date formatting helper (Date only, no time)
+     --------------------------------------------------------- */
+  function formatDateOnly(dateVal) {
+    if (!dateVal) return "TBA";
+    if (typeof dateVal === "string" && dateVal.includes("-")) {
+      const clean = dateVal.split("T")[0];
+      const parts = clean.split("-");
+      if (parts.length === 3) {
+        const d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+        if (!isNaN(d.getTime())) {
+          return d.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+        }
+      }
+    }
+    const d = new Date(dateVal);
+    return isNaN(d.getTime()) ? "TBA" : d.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
   function getEvents() {
     try {
       const raw = localStorage.getItem(EVENTS_KEY);
@@ -50,12 +69,12 @@
         events = JSON.parse(raw);
       }
 
-      // Curated list of upcoming events
+      // Curated list of upcoming events (Date only)
       const defaultEvents = [
         {
           id: "evt_1",
           title: "Inter-College Step & Swing Showdown 2026",
-          date: new Date(Date.now() + 86400000 * 5).toISOString(),
+          date: new Date(Date.now() + 86400000 * 5).toISOString().split("T")[0],
           venue: "Geeta University Main Auditorium",
           category: "Competition",
           description: "High-energy rhythm step routines & swing battle open to all students. Certificate of achievement and trophies!",
@@ -64,7 +83,7 @@
         {
           id: "evt_2",
           title: "Beginner Lindy Hop & Body Percussion Workshop",
-          date: new Date(Date.now() + 86400000 * 10).toISOString(),
+          date: new Date(Date.now() + 86400000 * 10).toISOString().split("T")[0],
           venue: "Dance Studio Block B",
           category: "Workshop",
           description: "Learn fundamental 6-count swing footwork and percussive body stomps in an interactive 2-hour intensive session.",
@@ -73,7 +92,7 @@
         {
           id: "evt_3",
           title: "Annual Campus Flash Mob & Rhythm Showcase",
-          date: new Date(Date.now() + 86400000 * 16).toISOString(),
+          date: new Date(Date.now() + 86400000 * 16).toISOString().split("T")[0],
           venue: "University Central Plaza",
           category: "Showcase",
           description: "Join the entire Step & Swing crew for our biggest synchronized rhythm performance of the semester across campus plaza.",
@@ -82,7 +101,7 @@
         {
           id: "evt_4",
           title: "Hip-Hop & Footwork Freestyle Battle",
-          date: new Date(Date.now() + 86400000 * 22).toISOString(),
+          date: new Date(Date.now() + 86400000 * 22).toISOString().split("T")[0],
           venue: "Student Activity Center Open Stage",
           category: "Freestyle Battle",
           description: "1v1 percussive footwork battle with live DJ beat mixing. Cash prizes for best rhythm improvisation!",
@@ -91,7 +110,7 @@
         {
           id: "evt_5",
           title: "Couples Social Swing & Salsa Night",
-          date: new Date(Date.now() + 86400000 * 28).toISOString(),
+          date: new Date(Date.now() + 86400000 * 28).toISOString().split("T")[0],
           venue: "Amphitheatre Outdoor Ground",
           category: "Social Dance",
           description: "An evening of social swing partner dancing, Latin step fusion, live music, and refreshments.",
@@ -359,7 +378,7 @@
         events.forEach((evt) => {
           const card = document.createElement("div");
           card.className = "event-card reveal-up in";
-          const dateStr = evt.date ? new Date(evt.date).toLocaleString([], { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : "TBA";
+          const dateStr = evt.date ? formatDateOnly(evt.date) : "TBA";
           card.innerHTML = `
             <div>
               <span class="category-badge">${escapeHtml(evt.category || "Club Event")}</span>
@@ -576,7 +595,7 @@
 
         events.forEach((evt, i) => {
           const regCount = registrations.filter((r) => r.eventId === evt.id).length;
-          const dStr = evt.date ? new Date(evt.date).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' }) : "TBA";
+          const dStr = evt.date ? formatDateOnly(evt.date) : "TBA";
           const tr = document.createElement("tr");
           tr.innerHTML = `
             <td>${i + 1}</td>
@@ -650,8 +669,8 @@
 
         archivedEvents.forEach((evt, i) => {
           const regCount = registrations.filter((r) => r.eventId === evt.id).length;
-          const dStr = evt.date ? new Date(evt.date).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' }) : "TBA";
-          const archStr = evt.archivedAt ? new Date(evt.archivedAt).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' }) : "—";
+          const dStr = evt.date ? formatDateOnly(evt.date) : "TBA";
+          const archStr = evt.archivedAt ? formatDateOnly(evt.archivedAt) : "—";
           const tr = document.createElement("tr");
           tr.innerHTML = `
             <td>${i + 1}</td>
@@ -725,7 +744,7 @@
       if (!editModal || !editForm) return;
       document.getElementById("editEventId").value = evt.id;
       document.getElementById("editEventTitle").value = evt.title || "";
-      document.getElementById("editEventDate").value = evt.date ? new Date(evt.date).toISOString().slice(0, 16) : "";
+      document.getElementById("editEventDate").value = evt.date ? (evt.date.includes("T") ? evt.date.split("T")[0] : evt.date) : "";
       document.getElementById("editEventVenue").value = evt.venue || "";
       document.getElementById("editEventCategory").value = evt.category || "";
       document.getElementById("editEventDesc").value = evt.description || "";
@@ -1135,7 +1154,7 @@
       if (matched) {
         if (heroTitle) heroTitle.textContent = matched.title;
         if (heroCategory) heroCategory.textContent = matched.category || "Official Club Event";
-        if (heroDate) heroDate.textContent = matched.date ? "📅 " + new Date(matched.date).toLocaleString([], { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : "📅 TBA";
+        if (heroDate) heroDate.textContent = matched.date ? "📅 " + formatDateOnly(matched.date) : "📅 TBA";
         if (heroVenue) heroVenue.textContent = "📍 " + (matched.venue || "Campus Venue");
         if (heroDesc) heroDesc.textContent = matched.description || "Complete your registration details below.";
         if (formHeadingTitle) formHeadingTitle.textContent = `Register For ${matched.title}`;
