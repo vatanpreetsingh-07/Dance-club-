@@ -313,6 +313,49 @@
 
     logoutBtn.addEventListener("click", () => logOut(false));
 
+    // ---- Delete registration helper ----
+    function deleteRegistration(index) {
+      const all = getRegistrations();
+      if (index >= 0 && index < all.length) {
+        const removed = all.splice(index, 1);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(all));
+        showToast(`Deleted registration for ${removed[0]?.name || "student"}.`);
+        renderDashboard();
+      }
+    }
+
+    // ---- Clear all registrations helper ----
+    const clearAllBtn = document.getElementById("clearAllBtn");
+    if (clearAllBtn) {
+      clearAllBtn.addEventListener("click", function () {
+        const data = getRegistrations();
+        if (!data.length) {
+          showToast("No registrations to clear.", true);
+          return;
+        }
+        if (confirm("Are you sure you want to delete ALL student registrations? This cannot be undone.")) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+          showToast("All registrations deleted.");
+          renderDashboard();
+        }
+      });
+    }
+
+    // Handle delete button clicks inside table
+    const tbody = document.getElementById("regBody");
+    if (tbody) {
+      tbody.addEventListener("click", function (e) {
+        const btn = e.target.closest(".delete-btn");
+        if (btn) {
+          const idx = parseInt(btn.dataset.index, 10);
+          const studentName = btn.dataset.name || "this registration";
+          if (confirm(`Are you sure you want to delete the registration for "${studentName}"?`)) {
+            deleteRegistration(idx);
+          }
+        }
+      });
+    }
+
     // ---- Render dashboard table + stats ----
     function renderDashboard() {
       const data = getRegistrations();
@@ -320,6 +363,7 @@
       const emptyState = document.getElementById("emptyState");
       const table = document.getElementById("regTable");
 
+      if (!tbody) return;
       tbody.innerHTML = "";
 
       if (!data.length) {
@@ -343,6 +387,9 @@
             <td>${escapeHtml(r.phone)}</td>
             <td>${escapeHtml(r.dance)}</td>
             <td class="mono">${submitted}</td>
+            <td>
+              <button class="btn danger btn-sm delete-btn" data-index="${i}" data-name="${escapeHtml(r.name)}" title="Delete this entry">Delete</button>
+            </td>
           `;
           tbody.appendChild(tr);
         });
