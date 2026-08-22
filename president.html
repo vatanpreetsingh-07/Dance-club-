@@ -209,6 +209,7 @@
     </div>
     <form id="editEventForm" class="form-panel" style="padding: 24px; border:none; background:transparent;" autocomplete="off">
       <input type="hidden" id="editEventId" name="id">
+      <input type="hidden" id="editEventIsArchived" name="isArchived" value="0">
       <div class="form-grid">
         <div class="field" data-field="title">
           <label for="editEventTitle">Event Title *</label>
@@ -239,6 +240,7 @@
   </div>
 </div>
 
-<script src="script.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script type="module" src="script.js"></script>
 </body>
 </html>
