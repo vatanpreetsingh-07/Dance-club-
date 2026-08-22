@@ -741,12 +741,86 @@ section { position: relative; overflow: hidden; }
   }
   table { min-width: 780px; }
 
-  /* Events Grid Mobile */
-  .events-grid { grid-template-columns: 1fr; }
-  .event-card { padding: 24px 20px; }
+  /* Events Grid & Team Grid Mobile */
+  .events-grid, .team-grid { grid-template-columns: 1fr; }
+  .event-card, .team-card { padding: 24px 20px; }
 
   /* Toast notification on mobile */
   .toast { left: 16px; right: 16px; bottom: 16px; max-width: none; text-align: center; }
+}
+
+/* ---------- Core Team Section ---------- */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+.team-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  padding: 32px 24px;
+  position: relative;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.team-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-6px);
+  box-shadow: 0 16px 36px rgba(0,0,0,0.4);
+}
+.team-card.lead-card {
+  border-color: rgba(212, 166, 58, 0.5);
+  background: linear-gradient(145deg, var(--panel), var(--panel-2));
+}
+.team-card .avatar-badge {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--panel-2);
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  font-family: 'Big Shoulders Display', sans-serif;
+  font-weight: 900;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  box-shadow: 0 0 15px rgba(212, 166, 58, 0.2);
+}
+.team-card.lead-card .avatar-badge {
+  background: var(--gold);
+  color: var(--bg);
+}
+.team-card .team-role {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  background: rgba(212, 166, 58, 0.1);
+  border: 1px solid rgba(212, 166, 58, 0.3);
+  padding: 4px 10px;
+  margin-bottom: 14px;
+  display: inline-block;
+}
+.team-card .team-role.gold-badge {
+  background: var(--gold);
+  color: var(--bg);
+  border: none;
+  font-weight: 600;
+}
+.team-card h3 {
+  font-size: 26px;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+.team-card .role-desc {
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.6;
 }
 
 @keyframes fadeInDown {

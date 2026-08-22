@@ -184,14 +184,14 @@
         }
       });
 
-      // 6. Style Cards Floating Motion on Scroll
-      const styleCards = document.querySelectorAll(".style-card");
+      // 6. Style Cards & Team Cards Floating Motion on Scroll
+      const styleCards = document.querySelectorAll(".style-card, .team-card");
       styleCards.forEach((card, idx) => {
         const rect = card.getBoundingClientRect();
         if (rect.top < viewportHeight && rect.bottom > 0) {
           const dir = idx % 2 === 0 ? 1 : -1;
-          const dist = (rect.top - viewportHeight / 2) * 0.07 * dir;
-          const rot = (rect.top - viewportHeight / 2) * 0.015 * dir;
+          const dist = (rect.top - viewportHeight / 2) * 0.06 * dir;
+          const rot = (rect.top - viewportHeight / 2) * 0.012 * dir;
           card.style.transform = `translate3d(0, ${dist}px, 0) rotate(${rot}deg)`;
         }
       });
