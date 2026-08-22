@@ -99,6 +99,16 @@
           backToTopBtn.classList.remove("show");
         }
       }
+
+      // Parallax movement for floating dancing objects
+      const danceObjects = document.querySelectorAll(".dance-object");
+      danceObjects.forEach((obj) => {
+        const speed = parseFloat(obj.dataset.speed || "0.2");
+        const rotFactor = parseFloat(obj.dataset.rotate || "0.05");
+        const yPos = scrollTop * speed;
+        const rot = scrollTop * rotFactor;
+        obj.style.transform = `translate3d(0, ${yPos}px, 0) rotate(${rot}deg)`;
+      });
     });
 
     if (backToTopBtn) {

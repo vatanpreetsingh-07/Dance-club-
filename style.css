@@ -542,3 +542,30 @@ tbody tr:hover{ background:var(--panel); }
   .about-grid{ gap:32px; }
   .dash-stats{ grid-template-columns:repeat(2,1fr); }
 }
+
+/* ---------- Floating Dancing Objects ---------- */
+section { position: relative; overflow: hidden; }
+
+.dance-object {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.28;
+  transition: transform 0.1s linear, opacity 0.3s ease;
+  will-change: transform;
+  filter: drop-shadow(0 0 10px rgba(212, 166, 58, 0.25));
+  z-index: 0;
+}
+.dance-object.gold { fill: var(--gold); stroke: var(--gold); color: var(--gold); }
+.dance-object.red { fill: var(--red); stroke: var(--red); color: var(--red); }
+
+@keyframes danceFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-16px) rotate(6deg); }
+}
+.dance-float {
+  animation: danceFloat 4.2s ease-in-out infinite;
+}
+
+@media (max-width: 768px) {
+  .dance-object { opacity: 0.15; scale: 0.7; }
+}
