@@ -22,7 +22,8 @@
     <a href="#styles">What We Dance</a>
     <a href="#team">Core Team</a>
     <a href="#events">Upcoming Events</a>
-    <a href="#join">Register</a>
+    <a href="event-register.html" style="color:var(--gold);">Register For Event ↗</a>
+    <a href="#join">Join The Club</a>
     <a href="president.html" class="cta">President Portal</a>
   </div>
 </nav>
@@ -58,8 +59,8 @@
   <h1 class="reveal-zoom">MOVE ON <em>BEAT.</em><br>SWING THE <em>ROOM.</em></h1>
   <p class="lede reveal-up">Step & Swing is the campus home for rhythm-first dancers — from sharp, percussive step routines to loose, joyful swing. No auditions to join. Just fill in your details and we'll take it from there.</p>
   <div class="actions reveal-up" style="transition-delay:.15s;">
-    <a href="#join" class="btn">Register Now</a>
-    <a href="#events" class="btn ghost">Explore Events</a>
+    <a href="#join" class="btn">Join The Club</a>
+    <a href="event-register.html" class="btn ghost">Register For Event ↗</a>
   </div>
 
   <!-- Animated footstep trail -->
@@ -321,19 +322,14 @@
   </div>
   <div class="wrap">
     <div class="section-head reveal-left">
-      <span class="eyebrow">04 — Registration</span>
-      <h2>Join The Club / Register For Event</h2>
-      <p>Select your desired event or general membership, then fill in your details below. Your entry goes straight into the club's records for the president to review.</p>
+      <span class="eyebrow">04 — General Membership</span>
+      <h2>Join Step &amp; Swing Club</h2>
+      <p>Fill in your details below to become an official member of Step &amp; Swing Dance Club. <i>Looking to register for a specific upcoming workshop or competition? <a href="event-register.html" style="color:var(--gold); text-decoration:underline;"><b>Open Event Registration Page ↗</b></a></i></p>
     </div>
 
     <form id="regForm" class="form-panel reveal-up" novalidate>
+      <input type="hidden" name="eventId" value="general">
       <div class="form-grid">
-        <div class="field full" data-field="eventId">
-          <label for="eventSelect">Registering For</label>
-          <select id="eventSelect" name="eventId" style="background: var(--bg); color: var(--text); border: 1px solid var(--line); padding: 13px 14px; border-radius: 2px; font-family: 'Work Sans'; font-size: 15px; width: 100%;">
-            <option value="general">General Dance Club Membership</option>
-          </select>
-        </div>
         <div class="field" data-field="name">
           <label for="name">Full Name</label>
           <input type="text" id="name" name="name" placeholder="e.g. Ananya Sharma" autocomplete="name">
