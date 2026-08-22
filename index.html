@@ -8,6 +8,8 @@
 </head>
 <body>
 
+<div class="scroll-progress" id="scrollProgress"></div>
+
 <nav class="nav">
   <div class="brand">STEP<span>&amp;</span>SWING</div>
   <div class="links">
@@ -28,18 +30,17 @@
 </div>
 
 <header class="hero">
-  <div class="eyebrow">Geeta University · Official Dance Society</div>
-  <h1>MOVE ON <em>BEAT.</em><br>SWING THE <em>ROOM.</em></h1>
-  <p class="lede">Step & Swing is the campus home for rhythm-first dancers — from sharp, percussive step routines to loose, joyful swing. No auditions to join. Just fill in your details and we'll take it from there.</p>
-  <div class="actions">
+  <div class="eyebrow reveal-down">Geeta University · Official Dance Society</div>
+  <h1 class="reveal-zoom">MOVE ON <em>BEAT.</em><br>SWING THE <em>ROOM.</em></h1>
+  <p class="lede reveal-up">Step & Swing is the campus home for rhythm-first dancers — from sharp, percussive step routines to loose, joyful swing. No auditions to join. Just fill in your details and we'll take it from there.</p>
+  <div class="actions reveal-up" style="transition-delay:.15s;">
     <a href="#join" class="btn">Register Now</a>
     <a href="#about" class="btn ghost">Learn More</a>
   </div>
 
-  <!-- Signature element: an animated footstep trail -->
-  <div class="trail" aria-hidden="true">
+  <!-- Animated footstep trail -->
+  <div class="trail reveal-zoom" style="transition-delay:.25s;" aria-hidden="true">
     <svg viewBox="0 0 760 150" xmlns="http://www.w3.org/2000/svg">
-      <!-- left foot prints -->
       <g class="print left" style="animation-delay:.05s">
         <ellipse cx="60" cy="70" rx="16" ry="24"/>
         <circle cx="52" cy="42" r="6"/><circle cx="64" cy="38" r="6.5"/><circle cx="76" cy="40" r="6"/>
@@ -70,11 +71,17 @@
       </g>
     </svg>
   </div>
+
+  <!-- Scroll Down indicator -->
+  <a href="#about" class="scroll-indicator reveal-up" style="transition-delay:.35s;" aria-label="Scroll down">
+    <span>Scroll Down</span>
+    <div class="mouse"><div class="wheel"></div></div>
+  </a>
 </header>
 
 <section id="about">
   <div class="wrap about-grid">
-    <div class="reveal">
+    <div class="reveal-left">
       <div class="section-head" style="margin-bottom:24px;">
         <span class="eyebrow">01 — About the Club</span>
         <h2>Two Traditions.<br>One Floor.</h2>
@@ -82,7 +89,7 @@
       <p>Step draws from military drill, stomp, and gumboot traditions — precise, percussive, built on rhythm you make with your own body. Swing pulls from Lindy Hop and jazz-age ballrooms — partner-led, playful, built on momentum.</p>
       <p>We train both, every week, so members leave with a wider vocabulary of movement than any single-style club offers. Sessions are open to complete beginners and returning dancers alike — you don't need experience to register.</p>
     </div>
-    <div class="reveal stat-list" style="transition-delay:.1s;">
+    <div class="reveal-right stat-list" style="transition-delay:.15s;">
       <div class="stat"><span class="num">02</span><span class="label">Weekly Practice<br>Sessions</span></div>
       <div class="stat"><span class="num">04</span><span class="label">Core Disciplines<br>Taught</span></div>
       <div class="stat"><span class="num">00</span><span class="label">Auditions<br>Required</span></div>
@@ -93,28 +100,28 @@
 
 <section id="styles">
   <div class="wrap">
-    <div class="section-head reveal">
+    <div class="section-head reveal-down">
       <span class="eyebrow">02 — What We Dance</span>
       <h2>The Repertoire</h2>
       <p>A quick look at what members train in across the semester. This is here for context only — your registration form doesn't ask you to pick one, so describe your own interests in your own words.</p>
     </div>
     <div class="style-grid">
-      <div class="style-card reveal">
+      <div class="style-card reveal-zoom">
         <span class="idx">01</span>
         <h3>Step</h3>
         <p>Body percussion, stomps, claps and vocal calls — rhythm built entirely from the group, no music required.</p>
       </div>
-      <div class="style-card reveal" style="transition-delay:.08s;">
+      <div class="style-card reveal-zoom" style="transition-delay:.1s;">
         <span class="idx">02</span>
         <h3>Lindy Hop Swing</h3>
         <p>The original swing partner dance — six and eight-count patterns, breakaways, and social floor craft.</p>
       </div>
-      <div class="style-card reveal" style="transition-delay:.16s;">
+      <div class="style-card reveal-zoom" style="transition-delay:.2s;">
         <span class="idx">03</span>
         <h3>Contemporary Step</h3>
         <p>Modern fusion of step fundamentals with hip-hop and contemporary phrasing for stage routines.</p>
       </div>
-      <div class="style-card reveal" style="transition-delay:.24s;">
+      <div class="style-card reveal-zoom" style="transition-delay:.3s;">
         <span class="idx">04</span>
         <h3>Swing-Salsa Blend</h3>
         <p>Cross-training piece mixing swing footwork with Latin partner turns for competition sets.</p>
@@ -125,13 +132,13 @@
 
 <section id="join">
   <div class="wrap">
-    <div class="section-head reveal">
+    <div class="section-head reveal-left">
       <span class="eyebrow">03 — Registration</span>
       <h2>Join The Club</h2>
       <p>Fill in your own details below in your own words — there's nothing to pick from a list. Your entry goes straight into the club's records for the president to review.</p>
     </div>
 
-    <form id="regForm" class="form-panel reveal" novalidate>
+    <form id="regForm" class="form-panel reveal-up" novalidate>
       <div class="form-grid">
         <div class="field" data-field="name">
           <label for="name">Full Name</label>
@@ -187,6 +194,9 @@
 <footer>
   STEP &amp; SWING DANCE CLUB · GEETA UNIVERSITY · RECORDS MANAGED VIA <a href="president.html" style="color:var(--gold); text-decoration:none;">PRESIDENT PORTAL</a>
 </footer>
+
+<!-- Floating Back To Top Button -->
+<button id="backToTop" class="back-to-top" aria-label="Back to top">↑</button>
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 

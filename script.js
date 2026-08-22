@@ -55,30 +55,57 @@
   }
 
   /* ---------------------------------------------------------
-     Scroll-reveal animation (IntersectionObserver)
+     Scroll-reveal animation & Scroll Controls (Progress & Back To Top)
      --------------------------------------------------------- */
   function initScrollReveal() {
-    const targets = document.querySelectorAll(".reveal");
-    if (!targets.length) return;
+    const targets = document.querySelectorAll(".reveal, .reveal-up, .reveal-down, .reveal-left, .reveal-right, .reveal-zoom");
+    
+    if (targets.length) {
+      if (!("IntersectionObserver" in window)) {
+        targets.forEach((el) => el.classList.add("in"));
+      } else {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("in");
+              }
+            });
+          },
+          { threshold: 0.1, rootMargin: "0px 0px -30px 0px" }
+        );
 
-    if (!("IntersectionObserver" in window)) {
-      targets.forEach((el) => el.classList.add("in"));
-      return;
+        targets.forEach((el) => observer.observe(el));
+      }
     }
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("in");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
-    );
+    // Scroll progress bar
+    const progressEl = document.getElementById("scrollProgress");
+    const backToTopBtn = document.getElementById("backToTop");
 
-    targets.forEach((el) => observer.observe(el));
+    window.addEventListener("scroll", function () {
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      
+      if (progressEl && docHeight > 0) {
+        const scrolled = (scrollTop / docHeight) * 100;
+        progressEl.style.width = scrolled + "%";
+      }
+
+      if (backToTopBtn) {
+        if (scrollTop > 300) {
+          backToTopBtn.classList.add("show");
+        } else {
+          backToTopBtn.classList.remove("show");
+        }
+      }
+    });
+
+    if (backToTopBtn) {
+      backToTopBtn.addEventListener("click", function () {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+    }
   }
 
   /* ---------------------------------------------------------
