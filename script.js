@@ -694,6 +694,24 @@
       showToast("Excel sheet downloaded.");
     });
 
+    // Auto-logout when going back or leaving the page
+    const backLinks = document.querySelectorAll('a[href*="index.html"]');
+    backLinks.forEach((link) => {
+      link.addEventListener("click", function () {
+        sessionStorage.removeItem(SESSION_KEY);
+      });
+    });
+
+    window.addEventListener("pagehide", function () {
+      sessionStorage.removeItem(SESSION_KEY);
+    });
+
+    window.addEventListener("pageshow", function (event) {
+      if (!isLoggedIn()) {
+        showLogin();
+      }
+    });
+
     // Initial state on load
     if (isLoggedIn()) {
       showDashboard();
