@@ -15,6 +15,7 @@
   <div class="links">
     <a href="#about">About</a>
     <a href="#styles">What We Dance</a>
+    <a href="#events">Upcoming Events</a>
     <a href="#join">Register</a>
     <a href="president.html" class="cta">President Portal</a>
   </div>
@@ -52,7 +53,7 @@
   <p class="lede reveal-up">Step & Swing is the campus home for rhythm-first dancers — from sharp, percussive step routines to loose, joyful swing. No auditions to join. Just fill in your details and we'll take it from there.</p>
   <div class="actions reveal-up" style="transition-delay:.15s;">
     <a href="#join" class="btn">Register Now</a>
-    <a href="#about" class="btn ghost">Learn More</a>
+    <a href="#events" class="btn ghost">Explore Events</a>
   </div>
 
   <!-- Animated footstep trail -->
@@ -179,6 +180,27 @@
   </div>
 </section>
 
+<!-- ============ UPCOMING EVENTS SECTION ============ -->
+<section id="events">
+  <div class="dance-object gold dance-float" data-speed="0.16" data-rotate="-0.07" style="top: 15%; right: 3%; width: 110px; height: 110px;">
+    <svg viewBox="0 0 100 100" fill="currentColor">
+      <path d="M50 15L62 38L88 42L69 61L73 87L50 75L27 87L31 61L12 42L38 38L50 15Z"/>
+    </svg>
+  </div>
+
+  <div class="wrap">
+    <div class="section-head reveal-down">
+      <span class="eyebrow">03 — Events &amp; Workshops</span>
+      <h2>Upcoming Club Events</h2>
+      <p>Explore upcoming battles, workshops, and dance showcases published by the club president. Register directly for any event below.</p>
+    </div>
+
+    <div id="eventsContainer" class="events-grid reveal-up">
+      <!-- Dynamic event cards rendered via JS -->
+    </div>
+  </div>
+</section>
+
 <section id="join">
   <!-- Dancing Objects for Join Section -->
   <div class="dance-object gold dance-float" data-speed="0.14" data-rotate="0.05" style="top: 20%; left: 2%; width: 90px; height: 90px;">
@@ -203,13 +225,19 @@
   </div>
   <div class="wrap">
     <div class="section-head reveal-left">
-      <span class="eyebrow">03 — Registration</span>
-      <h2>Join The Club</h2>
-      <p>Fill in your own details below in your own words — there's nothing to pick from a list. Your entry goes straight into the club's records for the president to review.</p>
+      <span class="eyebrow">04 — Registration</span>
+      <h2>Join The Club / Register For Event</h2>
+      <p>Select your desired event or general membership, then fill in your details below. Your entry goes straight into the club's records for the president to review.</p>
     </div>
 
     <form id="regForm" class="form-panel reveal-up" novalidate>
       <div class="form-grid">
+        <div class="field full" data-field="eventId">
+          <label for="eventSelect">Registering For</label>
+          <select id="eventSelect" name="eventId" style="background: var(--bg); color: var(--text); border: 1px solid var(--line); padding: 13px 14px; border-radius: 2px; font-family: 'Work Sans'; font-size: 15px; width: 100%;">
+            <option value="general">General Dance Club Membership</option>
+          </select>
+        </div>
         <div class="field" data-field="name">
           <label for="name">Full Name</label>
           <input type="text" id="name" name="name" placeholder="e.g. Ananya Sharma" autocomplete="name">

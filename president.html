@@ -51,9 +51,82 @@
 
   <div class="dash-stats">
     <div class="dash-stat"><div id="statTotal" class="n">0</div><div class="l">Total Registrations</div></div>
+    <div class="dash-stat"><div id="statEvents" class="n">0</div><div class="l">Active Events</div></div>
     <div class="dash-stat"><div id="statDept" class="n">0</div><div class="l">Departments Represented</div></div>
-    <div class="dash-stat"><div id="statCourse" class="n">0</div><div class="l">Courses Represented</div></div>
     <div class="dash-stat"><div id="statToday" class="n">0</div><div class="l">Added Today</div></div>
+  </div>
+
+  <!-- Create Event Section -->
+  <div class="event-panel-wrap">
+    <div class="section-subhead">
+      <h2>Create New Event</h2>
+      <p>Publish workshops, competitions, or showcase events for students to register.</p>
+    </div>
+    <form id="createEventForm" class="form-panel" style="padding: 28px; margin-bottom: 32px;" autocomplete="off">
+      <div class="form-grid">
+        <div class="field" data-field="title">
+          <label for="eventTitle">Event Title</label>
+          <input type="text" id="eventTitle" name="title" placeholder="e.g. Semester Step & Swing Showdown 2026" required>
+        </div>
+        <div class="field" data-field="date">
+          <label for="eventDate">Date & Time</label>
+          <input type="datetime-local" id="eventDate" name="date" required>
+        </div>
+        <div class="field" data-field="venue">
+          <label for="eventVenue">Venue / Location</label>
+          <input type="text" id="eventVenue" name="venue" placeholder="e.g. Geeta University Main Auditorium" required>
+        </div>
+        <div class="field" data-field="category">
+          <label for="eventCategory">Category</label>
+          <input type="text" id="eventCategory" name="category" placeholder="e.g. Competition / Workshop / Social Dance">
+        </div>
+        <div class="field full" data-field="description">
+          <label for="eventDesc">Event Description</label>
+          <textarea id="eventDesc" name="description" placeholder="Brief details about schedule, dress code, rules, or guidelines..." style="min-height: 70px;"></textarea>
+        </div>
+      </div>
+      <div style="margin-top: 20px; text-align: right;">
+        <button type="submit" class="btn">+ Create & Publish Event</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Active Events List -->
+  <div class="event-panel-wrap" style="margin-bottom: 40px;">
+    <div class="section-subhead">
+      <h2>Published Events</h2>
+    </div>
+    <div class="table-wrap" style="padding:0;">
+      <table id="eventsTable">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Event Title</th>
+            <th>Date & Time</th>
+            <th>Venue</th>
+            <th>Category</th>
+            <th>Registrations</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="eventsBody"></tbody>
+      </table>
+      <div id="eventsEmptyState" class="empty-state" style="display:none; padding: 30px;">
+        <p class="mono">No custom events created yet. Use the form above to add an event.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Registrations List -->
+  <div class="section-subhead" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+    <h2>Student Registrations</h2>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <label for="filterEventSelect" class="mono" style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Filter by Event:</label>
+      <select id="filterEventSelect" style="background: var(--bg); color: var(--text); border: 1px solid var(--line); padding: 8px 12px; font-family: 'IBM Plex Mono'; font-size: 12px;">
+        <option value="all">All Registrations</option>
+        <option value="general">General Membership</option>
+      </select>
+    </div>
   </div>
 
   <div class="table-wrap">
@@ -61,6 +134,7 @@
       <thead>
         <tr>
           <th>#</th>
+          <th>Registered For</th>
           <th>Name</th>
           <th>Roll No</th>
           <th>Department</th>
