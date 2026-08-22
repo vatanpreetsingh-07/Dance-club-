@@ -1113,9 +1113,9 @@
 
     const allEvents = [...getEvents(), ...getArchivedEvents()];
 
-    // Populate dropdown options
+    // Populate dropdown options with actual events only
     if (selectEl) {
-      selectEl.innerHTML = `<option value="general">General Dance Club Membership</option>`;
+      selectEl.innerHTML = "";
       allEvents.forEach((evt) => {
         const opt = document.createElement("option");
         opt.value = evt.id;
@@ -1123,8 +1123,10 @@
         opt.textContent = `${evt.title} ${dStr ? '(' + dStr + ')' : ''}`;
         selectEl.appendChild(opt);
       });
-      if (Array.from(selectEl.options).some((o) => o.value === eventIdFromUrl)) {
+      if (eventIdFromUrl && Array.from(selectEl.options).some((o) => o.value === eventIdFromUrl)) {
         selectEl.value = eventIdFromUrl;
+      } else if (selectEl.options.length > 0) {
+        selectEl.selectedIndex = 0;
       }
     }
 
@@ -1140,14 +1142,14 @@
         if (submitBtn) submitBtn.textContent = `Complete Registration for ${matched.title} →`;
         document.title = `Register: ${matched.title} — Step & Swing`;
       } else {
-        if (heroTitle) heroTitle.textContent = "General Dance Club Registration";
-        if (heroCategory) heroCategory.textContent = "General Membership";
-        if (heroDate) heroDate.textContent = "📅 Ongoing Academic Year 2026";
+        if (heroTitle) heroTitle.textContent = "Select An Upcoming Event";
+        if (heroCategory) heroCategory.textContent = "Event Registration";
+        if (heroDate) heroDate.textContent = "📅 Check Schedule Below";
         if (heroVenue) heroVenue.textContent = "📍 Geeta University Campus";
-        if (heroDesc) heroDesc.textContent = "Register to join Step & Swing Dance Club and participate in weekly step, swing, and contemporary dance workshops.";
-        if (formHeadingTitle) formHeadingTitle.textContent = "General Club Registration";
-        if (submitBtn) submitBtn.textContent = "Submit Club Registration →";
-        document.title = "General Registration — Step & Swing";
+        if (heroDesc) heroDesc.textContent = "Please select an upcoming club event from the dropdown below to register your participation.";
+        if (formHeadingTitle) formHeadingTitle.textContent = "Event Registration";
+        if (submitBtn) submitBtn.textContent = "Submit Event Registration →";
+        document.title = "Event Registration — Step & Swing";
       }
     }
 
