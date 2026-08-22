@@ -806,11 +806,25 @@ section { position: relative; overflow: hidden; }
   margin-bottom: 14px;
   display: inline-block;
 }
-.team-card .team-role.gold-badge {
-  background: var(--gold);
-  color: var(--bg);
+.team-card.faculty-card {
+  border-color: rgba(184, 64, 44, 0.6);
+  background: linear-gradient(145deg, var(--panel-2), var(--panel));
+}
+.team-card.faculty-card:hover {
+  border-color: var(--red);
+  box-shadow: 0 16px 36px rgba(184, 64, 44, 0.3);
+}
+.team-card .team-role.red-badge {
+  background: var(--red);
+  color: var(--text);
   border: none;
   font-weight: 600;
+}
+.avatar-badge.faculty-avatar {
+  background: var(--red) !important;
+  color: var(--text) !important;
+  border-color: var(--red) !important;
+  box-shadow: 0 0 15px rgba(184, 64, 44, 0.4) !important;
 }
 .team-card h3 {
   font-size: 26px;
