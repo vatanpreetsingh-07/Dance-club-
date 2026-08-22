@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Event Registration — Step &amp; Swing Dance Club</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .event-hero-banner {
+    position: relative;
+    padding: 60px 28px 40px;
+    background: linear-gradient(180deg, var(--panel-2) 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .event-hero-banner .wrap {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  .event-badge-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .event-hero-banner h1 {
+    font-size: clamp(32px, 6vw, 56px);
+    margin-bottom: 16px;
+    color: var(--text);
+    line-height: 1.1;
+  }
+  .event-hero-meta {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    color: var(--gold);
+    margin-bottom: 20px;
+  }
+  .event-hero-desc {
+    font-size: 15.5px;
+    color: var(--muted);
+    line-height: 1.65;
+    max-width: 760px;
+  }
+  .event-reg-wrap {
+    max-width: 860px;
+    margin: 40px auto 80px;
+    padding: 0 20px;
+  }
+  .success-card {
+    display: none;
+    background: var(--panel);
+    border: 1px solid var(--gold);
+    padding: 40px 32px;
+    border-radius: 4px;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  }
+  .success-card.show {
+    display: block;
+    animation: fadeInDown 0.4s ease;
+  }
+  .success-card .icon {
+    font-size: 48px;
+    margin-bottom: 16px;
+  }
+  .success-card h2 {
+    font-size: 32px;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+  .success-card p {
+    font-size: 15px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<nav class="nav">
+  <div class="brand">STEP<span>&amp;</span>SWING</div>
+  <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu">
+    <span class="bar"></span>
+    <span class="bar"></span>
+    <span class="bar"></span>
+  </button>
+  <div class="links" id="navLinks">
+    <a href="index.html">← Back to Main Site</a>
+    <a href="index.html#events">All Events</a>
+    <a href="president.html" class="cta">President Portal</a>
+  </div>
+</nav>
+
+<!-- ============ EVENT HEADER BANNER ============ -->
+<section class="event-hero-banner">
+  <div class="wrap">
+    <div class="event-badge-row">
+      <span class="category-badge" id="eventHeroCategory">Event Registration</span>
+      <span class="eyebrow" style="margin:0;">Geeta University Official Entry</span>
+    </div>
+    <h1 id="eventHeroTitle">Loading Event Details...</h1>
+    <div class="event-hero-meta">
+      <span id="eventHeroDate">📅 Loading Date...</span>
+      <span id="eventHeroVenue">📍 Loading Location...</span>
+    </div>
+    <p class="event-hero-desc" id="eventHeroDesc">Please complete the registration form below to reserve your spot for this official club event.</p>
+  </div>
+</section>
+
+<!-- ============ SEPARATE REGISTRATION FORM ============ -->
+<div class="event-reg-wrap">
+  <div id="eventSuccessCard" class="success-card">
+    <div class="icon">🎉</div>
+    <h2>Registration Confirmed!</h2>
+    <p id="successMessageDetails">Your details have been registered successfully for this event.</p>
+    <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+      <a href="index.html" class="btn">Return to Home Page</a>
+      <button id="registerAnotherBtn" class="btn ghost">Register Another Student</button>
+    </div>
+  </div>
+
+  <form id="eventRegForm" class="form-panel" style="padding: 36px 28px;" autocomplete="off">
+    <div class="section-head" style="margin-bottom: 28px;">
+      <span class="eyebrow">Student Information Form</span>
+      <h2 style="font-size: 32px;" id="formHeadingTitle">Register For Event</h2>
+      <p style="font-size: 14px; color: var(--muted);">Fill in your details accurately. Your entry will be recorded under this specific event list in the President Portal.</p>
+    </div>
+
+    <!-- Hidden / Selected Event Field -->
+    <div class="field full" style="margin-bottom: 20px;">
+      <label for="eventRegSelect">Selected Event / Session</label>
+      <select id="eventRegSelect" name="eventId" style="background: var(--bg); color: var(--gold); font-weight:600; border: 1px solid var(--gold); padding: 14px;">
+        <option value="general">General Dance Club Membership</option>
+      </select>
+    </div>
+
+    <div class="form-grid">
+      <div class="field" data-field="name">
+        <label for="name">Full Name *</label>
+        <input type="text" id="name" name="name" placeholder="e.g. Ananya Sharma" required>
+        <span class="err-msg">Please enter your full name.</span>
+      </div>
+
+      <div class="field" data-field="rollNo">
+        <label for="rollNo">Roll No / Student ID *</label>
+        <input type="text" id="rollNo" name="rollNo" placeholder="e.g. 23BCA1042" required>
+        <span class="err-msg">Please enter your student roll number.</span>
+      </div>
+
+      <div class="field" data-field="department">
+        <label for="department">Department / School *</label>
+        <input type="text" id="department" name="department" placeholder="e.g. Computer Science &amp; Engineering" required>
+        <span class="err-msg">Please enter your department.</span>
+      </div>
+
+      <div class="field" data-field="course">
+        <label for="course">Course / Degree *</label>
+        <input type="text" id="course" name="course" placeholder="e.g. B.Tech CSE / BCA" required>
+        <span class="err-msg">Please enter your course.</span>
+      </div>
+
+      <div class="field" data-field="year">
+        <label for="year">Year *</label>
+        <input type="text" id="year" name="year" placeholder="e.g. 2nd Year" required>
+        <span class="err-msg">Please enter your year of study.</span>
+      </div>
+
+      <div class="field" data-field="semester">
+        <label for="semester">Semester *</label>
+        <input type="text" id="semester" name="semester" placeholder="e.g. 4th Semester" required>
+        <span class="err-msg">Please enter your semester.</span>
+      </div>
+
+      <div class="field" data-field="phone">
+        <label for="phone">Phone Number *</label>
+        <input type="tel" id="phone" name="phone" placeholder="e.g. 9876543210" autocomplete="tel" required>
+        <span class="hint">10-digit mobile number</span>
+        <span class="err-msg">Please enter a valid 10-digit mobile number.</span>
+      </div>
+
+      <div class="field full" data-field="dance">
+        <label for="dance">Dance Experience / Event Notes *</label>
+        <textarea id="dance" name="dance" placeholder="Tell us about your dance background or any specific interests for this event..." style="min-height: 80px;" required></textarea>
+        <span class="err-msg">Please enter your dance experience or notes.</span>
+      </div>
+    </div>
+
+    <div class="form-foot" style="margin-top: 30px;">
+      <p class="form-note">Your registration will be submitted directly to the President Portal database.</p>
+      <button type="submit" id="eventSubmitBtn" class="btn" style="padding: 16px 32px; font-size: 15px;">Submit Event Registration →</button>
+    </div>
+  </form>
+</div>
+
+<footer>
+  STEP &amp; SWING DANCE CLUB · GEETA UNIVERSITY · <a href="index.html" style="color:var(--gold); text-decoration:none;">MAIN SITE</a>
+</footer>
+
+<!-- Floating Back To Top Button -->
+<button id="backToTop" class="back-to-top" aria-label="Back to top">↑</button>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -338,19 +338,9 @@
             </div>
             <p class="desc">${escapeHtml(evt.description || "Join us for this exciting Step & Swing event!")}</p>
           </div>
-          <button class="btn register-evt-btn" data-id="${evt.id}">Register For This Event →</button>
+          <a href="event-register.html?eventId=${evt.id}" class="btn" style="text-align:center;">Register For This Event →</a>
         `;
         container.appendChild(card);
-      });
-
-      container.querySelectorAll(".register-evt-btn").forEach((btn) => {
-        btn.addEventListener("click", function () {
-          const evtId = this.dataset.id;
-          if (selectEl) selectEl.value = evtId;
-          const joinSection = document.getElementById("join");
-          if (joinSection) joinSection.scrollIntoView({ behavior: "smooth" });
-          showToast("Event selected! Complete your registration details below.");
-        });
       });
     }
   }
@@ -955,6 +945,135 @@
   }
 
   /* ---------------------------------------------------------
+     Separate Dedicated Event Registration Page (event-register.html)
+     --------------------------------------------------------- */
+  function initSeparateEventRegistrationPage() {
+    const form = document.getElementById("eventRegForm");
+    if (!form) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const eventIdFromUrl = params.get("eventId") || "general";
+
+    const selectEl = document.getElementById("eventRegSelect");
+    const heroTitle = document.getElementById("eventHeroTitle");
+    const heroCategory = document.getElementById("eventHeroCategory");
+    const heroDate = document.getElementById("eventHeroDate");
+    const heroVenue = document.getElementById("eventHeroVenue");
+    const heroDesc = document.getElementById("eventHeroDesc");
+    const formHeadingTitle = document.getElementById("formHeadingTitle");
+    const submitBtn = document.getElementById("eventSubmitBtn");
+    const successCard = document.getElementById("eventSuccessCard");
+    const registerAnotherBtn = document.getElementById("registerAnotherBtn");
+
+    const allEvents = [...getEvents(), ...getArchivedEvents()];
+
+    // Populate dropdown options
+    if (selectEl) {
+      selectEl.innerHTML = `<option value="general">General Dance Club Membership</option>`;
+      allEvents.forEach((evt) => {
+        const opt = document.createElement("option");
+        opt.value = evt.id;
+        const dStr = evt.date ? new Date(evt.date).toLocaleDateString([], { month: 'short', day: 'numeric' }) : "";
+        opt.textContent = `${evt.title} ${dStr ? '(' + dStr + ')' : ''}`;
+        selectEl.appendChild(opt);
+      });
+      if (Array.from(selectEl.options).some((o) => o.value === eventIdFromUrl)) {
+        selectEl.value = eventIdFromUrl;
+      }
+    }
+
+    function updatePageForEvent(id) {
+      const matched = allEvents.find((e) => e.id === id);
+      if (matched) {
+        if (heroTitle) heroTitle.textContent = matched.title;
+        if (heroCategory) heroCategory.textContent = matched.category || "Official Club Event";
+        if (heroDate) heroDate.textContent = matched.date ? "📅 " + new Date(matched.date).toLocaleString([], { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : "📅 TBA";
+        if (heroVenue) heroVenue.textContent = "📍 " + (matched.venue || "Campus Venue");
+        if (heroDesc) heroDesc.textContent = matched.description || "Complete your registration details below.";
+        if (formHeadingTitle) formHeadingTitle.textContent = `Register For ${matched.title}`;
+        if (submitBtn) submitBtn.textContent = `Complete Registration for ${matched.title} →`;
+        document.title = `Register: ${matched.title} — Step & Swing`;
+      } else {
+        if (heroTitle) heroTitle.textContent = "General Dance Club Registration";
+        if (heroCategory) heroCategory.textContent = "General Membership";
+        if (heroDate) heroDate.textContent = "📅 Ongoing Academic Year 2026";
+        if (heroVenue) heroVenue.textContent = "📍 Geeta University Campus";
+        if (heroDesc) heroDesc.textContent = "Register to join Step & Swing Dance Club and participate in weekly step, swing, and contemporary dance workshops.";
+        if (formHeadingTitle) formHeadingTitle.textContent = "General Club Registration";
+        if (submitBtn) submitBtn.textContent = "Submit Club Registration →";
+        document.title = "General Registration — Step & Swing";
+      }
+    }
+
+    updatePageForEvent(selectEl ? selectEl.value : eventIdFromUrl);
+
+    if (selectEl) {
+      selectEl.addEventListener("change", function () {
+        updatePageForEvent(this.value);
+      });
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const fields = ["name", "rollNo", "department", "course", "year", "semester", "phone", "dance"];
+      let valid = true;
+      const values = {};
+
+      fields.forEach((name) => {
+        const el = form.elements[name];
+        const val = (el ? el.value || "" : "").trim();
+        values[name] = val;
+        const wrap = form.querySelector(`[data-field="${name}"]`);
+        let fieldValid = val.length > 0;
+        if (name === "phone") fieldValid = /^[0-9]{10}$/.test(val.replace(/\s+/g, ""));
+        if (name === "dance") fieldValid = val.length >= 3;
+        if (wrap) wrap.classList.toggle("error", !fieldValid);
+        if (!fieldValid) valid = false;
+      });
+
+      if (!valid) {
+        showToast("Please check the highlighted fields.", true);
+        return;
+      }
+
+      const selectedId = selectEl ? selectEl.value : "general";
+      const matchedEvt = allEvents.find((e) => e.id === selectedId);
+      const eventName = matchedEvt ? matchedEvt.title : "General Membership";
+
+      const entry = {
+        eventId: selectedId,
+        eventName: eventName,
+        name: values.name,
+        rollNo: values.rollNo,
+        department: values.department,
+        course: values.course,
+        year: values.year,
+        semester: values.semester,
+        phone: values.phone,
+        dance: values.dance,
+        submittedAt: new Date().toISOString(),
+      };
+
+      saveRegistration(entry);
+      form.reset();
+      form.style.display = "none";
+      if (successCard) {
+        const msg = document.getElementById("successMessageDetails");
+        if (msg) msg.textContent = `Thank you ${values.name}! Your registration for "${eventName}" (Roll No: ${values.rollNo}) has been saved in the President Portal database.`;
+        successCard.classList.add("show");
+      }
+      showToast(`Registration saved for "${eventName}"!`);
+    });
+
+    if (registerAnotherBtn) {
+      registerAnotherBtn.addEventListener("click", function () {
+        if (successCard) successCard.classList.remove("show");
+        form.style.display = "block";
+      });
+    }
+  }
+
+  /* ---------------------------------------------------------
      Boot
      --------------------------------------------------------- */
   document.addEventListener("DOMContentLoaded", function () {
@@ -963,5 +1082,6 @@
     initRegistrationForm();
     initPresidentPortal();
     renderEventsSection();
+    initSeparateEventRegistrationPage();
   });
 })();
