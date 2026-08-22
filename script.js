@@ -514,7 +514,8 @@
             <td><span class="category-badge">${escapeHtml(evt.category)}</span></td>
             <td><b>${regCount}</b> registrations</td>
             <td>
-              <button class="btn danger btn-sm delete-evt-btn" data-id="${evt.id}" data-title="${escapeHtml(evt.title)}">Delete Event</button>
+              <button class="btn ghost btn-sm download-evt-btn" data-id="${evt.id}" data-title="${escapeHtml(evt.title)}" title="Download Excel for this event only">📊 Excel</button>
+              <button class="btn danger btn-sm delete-evt-btn" data-id="${evt.id}" data-title="${escapeHtml(evt.title)}">Delete</button>
             </td>
           `;
           eventsBody.appendChild(tr);
@@ -531,6 +532,15 @@
               renderEventsList();
               renderDashboard();
             }
+          });
+        });
+
+        eventsBody.querySelectorAll(".download-evt-btn").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            const id = this.dataset.id;
+            const title = this.dataset.title || "Event";
+            const records = getRegistrations().filter((r) => r.eventId === id);
+            exportToExcel(records, `StepAndSwing_Event_${title}`);
           });
         });
       }
@@ -651,12 +661,10 @@
       }[c]));
     }
 
-    // ---- Excel export (SheetJS) ----
-    downloadBtn.addEventListener("click", function () {
-      const data = getRegistrations();
-
-      if (!data.length) {
-        showToast("No registrations to export yet.", true);
+    // ---- Reusable Excel Export Helper (SheetJS) ----
+    function exportToExcel(records, filenamePrefix) {
+      if (!records || !records.length) {
+        showToast("No registrations found to export for this selection.", true);
         return;
       }
 
@@ -665,7 +673,7 @@
         return;
       }
 
-      const rows = data.map((r, i) => ({
+      const rows = records.map((r, i) => ({
         "S.No": i + 1,
         "Registered For": r.eventName || "General Membership",
         "Full Name": r.name,
@@ -689,10 +697,47 @@
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Registrations");
 
+      const cleanPrefix = (filenamePrefix || "StepAndSwing_Registrations")
+        .replace(/[^a-zA-Z0-9_-]/g, "_")
+        .replace(/_+/g, "_");
       const dateStamp = new Date().toISOString().slice(0, 10);
-      XLSX.writeFile(workbook, `StepAndSwing_Registrations_${dateStamp}.xlsx`);
-      showToast("Excel sheet downloaded.");
-    });
+      XLSX.writeFile(workbook, `${cleanPrefix}_${dateStamp}.xlsx`);
+      showToast(`Excel file downloaded (${records.length} records).`);
+    }
+
+    // Export All Registrations
+    if (downloadBtn) {
+      downloadBtn.addEventListener("click", function () {
+        exportToExcel(getRegistrations(), "StepAndSwing_All_Registrations");
+      });
+    }
+
+    // Export General Membership Registrations Only
+    const downloadGeneralBtn = document.getElementById("downloadGeneralBtn");
+    if (downloadGeneralBtn) {
+      downloadGeneralBtn.addEventListener("click", function () {
+        const generalRecords = getRegistrations().filter((r) => (r.eventId || "general") === "general");
+        exportToExcel(generalRecords, "StepAndSwing_General_Club_Members");
+      });
+    }
+
+    // Export Current Filter Selection
+    const downloadFilteredBtn = document.getElementById("downloadFilteredBtn");
+    if (downloadFilteredBtn) {
+      downloadFilteredBtn.addEventListener("click", function () {
+        const filterVal = filterSelect ? filterSelect.value : "all";
+        const data = getRegistrations();
+        if (filterVal === "general") {
+          exportToExcel(data.filter((r) => (r.eventId || "general") === "general"), "StepAndSwing_General_Club_Members");
+        } else if (filterVal !== "all") {
+          const matchedEvt = getEvents().find((e) => e.id === filterVal);
+          const title = matchedEvt ? matchedEvt.title : "Event";
+          exportToExcel(data.filter((r) => r.eventId === filterVal), `StepAndSwing_Event_${title}`);
+        } else {
+          exportToExcel(data, "StepAndSwing_All_Registrations");
+        }
+      });
+    }
 
     // Auto-logout when going back or leaving the page
     const backLinks = document.querySelectorAll('a[href*="index.html"]');

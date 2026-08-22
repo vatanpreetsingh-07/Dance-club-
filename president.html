@@ -50,7 +50,8 @@
   <div class="dash-top">
     <div class="who">Signed in as <b>President</b> · session ends when you leave this page</div>
     <div class="dash-actions">
-      <button id="downloadBtn" class="btn">Download Excel Sheet</button>
+      <button id="downloadBtn" class="btn" title="Download Excel sheet with all registrations">Download All Excel</button>
+      <button id="downloadGeneralBtn" class="btn ghost" title="Download Excel sheet with General Club Registrations only">General Members Excel</button>
       <button id="clearAllBtn" class="btn danger ghost">Clear All</button>
       <button id="logoutBtn" class="btn ghost">Log Out</button>
     </div>
@@ -127,12 +128,13 @@
   <!-- Registrations List -->
   <div class="section-subhead" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
     <h2>Student Registrations</h2>
-    <div style="display: flex; align-items: center; gap: 10px;">
-      <label for="filterEventSelect" class="mono" style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Filter by Event:</label>
+    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+      <label for="filterEventSelect" class="mono" style="font-size: 11px; color: var(--muted); text-transform: uppercase;">Filter View:</label>
       <select id="filterEventSelect" style="background: var(--bg); color: var(--text); border: 1px solid var(--line); padding: 8px 12px; font-family: 'IBM Plex Mono'; font-size: 12px;">
         <option value="all">All Registrations</option>
         <option value="general">General Membership</option>
       </select>
+      <button id="downloadFilteredBtn" class="btn ghost btn-sm" style="padding: 8px 14px;" title="Download Excel for current filter selection">📊 Export Filtered Excel</button>
     </div>
   </div>
 
