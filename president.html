@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>President Portal — Step &amp; Swing Dance Club</title>
+<link rel="stylesheet" href="style.css">
+<!-- SheetJS: builds the downloadable .xlsx workbook -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="brand">STEP<span>&amp;</span>SWING</div>
+  <div class="links">
+    <a href="index.html">Back to Site</a>
+  </div>
+</nav>
+
+<!-- ============ LOGIN ============ -->
+<div id="loginShell" class="portal-shell">
+  <div class="login-card">
+    <div class="badge">P</div>
+    <h1>President<br>Portal</h1>
+    <p class="sub">Sign in to view registrations and export the members list. For security, this session ends automatically the moment you navigate away.</p>
+    <div id="loginError" class="login-error mono">Incorrect username or password.</div>
+    <form id="loginForm" autocomplete="off">
+      <div class="field">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" autocomplete="off">
+      </div>
+      <button type="submit" class="btn">Log In</button>
+    </form>
+  </div>
+</div>
+
+<!-- ============ DASHBOARD ============ -->
+<div id="dashboard" class="dashboard">
+  <div class="dash-top">
+    <div class="who">Signed in as <b>President</b> · session ends when you leave this page</div>
+    <div class="dash-actions">
+      <button id="downloadBtn" class="btn">Download Excel Sheet</button>
+      <button id="logoutBtn" class="btn ghost">Log Out</button>
+    </div>
+  </div>
+
+  <div class="dash-stats">
+    <div class="dash-stat"><div id="statTotal" class="n">0</div><div class="l">Total Registrations</div></div>
+    <div class="dash-stat"><div id="statDept" class="n">0</div><div class="l">Departments Represented</div></div>
+    <div class="dash-stat"><div id="statCourse" class="n">0</div><div class="l">Courses Represented</div></div>
+    <div class="dash-stat"><div id="statToday" class="n">0</div><div class="l">Added Today</div></div>
+  </div>
+
+  <div class="table-wrap">
+    <table id="regTable">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>Roll No</th>
+          <th>Department</th>
+          <th>Course</th>
+          <th>Year</th>
+          <th>Semester</th>
+          <th>Phone No</th>
+          <th>Dance Styles</th>
+          <th>Submitted</th>
+        </tr>
+      </thead>
+      <tbody id="regBody"></tbody>
+    </table>
+    <div id="emptyState" class="empty-state" style="display:none;">
+      <div class="display">No registrations yet</div>
+      <p class="mono">Entries will appear here as students submit the registration form.</p>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
