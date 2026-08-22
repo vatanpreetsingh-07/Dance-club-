@@ -319,29 +319,29 @@
     // Render Event Cards on index.html
     if (container) {
       container.innerHTML = "";
-      if (!events.length) {
+      if (!events || !events.length) {
         container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--muted);" class="mono">No upcoming events scheduled. Check back soon!</div>`;
-        return;
-      }
-
-      events.forEach((evt) => {
-        const card = document.createElement("div");
-        card.className = "event-card";
-        const dateStr = evt.date ? new Date(evt.date).toLocaleString([], { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : "TBA";
-        card.innerHTML = `
-          <div>
-            <span class="category-badge">${escapeHtml(evt.category || "Club Event")}</span>
-            <h3>${escapeHtml(evt.title)}</h3>
-            <div class="event-meta">
-              <span>📅 ${dateStr}</span>
-              <span>📍 ${escapeHtml(evt.venue)}</span>
+      } else {
+        events.forEach((evt) => {
+          const card = document.createElement("div");
+          card.className = "event-card reveal-up in";
+          const dateStr = evt.date ? new Date(evt.date).toLocaleString([], { weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : "TBA";
+          card.innerHTML = `
+            <div>
+              <span class="category-badge">${escapeHtml(evt.category || "Club Event")}</span>
+              <h3>${escapeHtml(evt.title)}</h3>
+              <div class="event-meta">
+                <span>📅 ${dateStr}</span>
+                <span>📍 ${escapeHtml(evt.venue)}</span>
+              </div>
+              <p class="desc">${escapeHtml(evt.description || "Join us for this exciting Step & Swing event!")}</p>
             </div>
-            <p class="desc">${escapeHtml(evt.description || "Join us for this exciting Step & Swing event!")}</p>
-          </div>
-          <a href="event-register.html?eventId=${evt.id}" class="btn" style="text-align:center;">Register For This Event →</a>
-        `;
-        container.appendChild(card);
-      });
+            <a href="event-register.html?eventId=${evt.id}" class="btn" style="text-align:center;">Register For This Event →</a>
+          `;
+          container.appendChild(card);
+        });
+      }
+      container.classList.add("in");
     }
   }
 
@@ -1184,6 +1184,22 @@
       });
     }
   }
+
+  /* ---------------------------------------------------------
+     Real-time Storage & PageShow Event Syncing
+     --------------------------------------------------------- */
+  window.addEventListener("storage", function (e) {
+    if (e.key === EVENTS_KEY || e.key === ARCHIVED_EVENTS_KEY || e.key === STORAGE_KEY) {
+      renderEventsSection();
+      if (typeof renderEventsList === "function") renderEventsList();
+      if (typeof renderArchivedEventsList === "function") renderArchivedEventsList();
+      if (typeof renderDashboard === "function") renderDashboard();
+    }
+  });
+
+  window.addEventListener("pageshow", function () {
+    renderEventsSection();
+  });
 
   /* ---------------------------------------------------------
      Boot
