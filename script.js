@@ -1220,6 +1220,64 @@
   }
 
   /* ---------------------------------------------------------
+     Separate Dedicated Club Membership Page (club-join.html)
+     --------------------------------------------------------- */
+  function initSeparateClubMembershipPage() {
+    const form = document.getElementById("clubMembershipForm");
+    if (!form) return;
+
+    const successCard = document.getElementById("membershipSuccessCard");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const fields = ["name", "rollNo", "department", "course", "year", "semester", "phone", "dance"];
+      let valid = true;
+      const values = {};
+
+      fields.forEach((name) => {
+        const el = form.elements[name];
+        const val = (el ? el.value || "" : "").trim();
+        values[name] = val;
+        const wrap = form.querySelector(`[data-field="${name}"]`);
+        let fieldValid = val.length > 0;
+        if (name === "phone") fieldValid = /^[0-9]{10}$/.test(val.replace(/\s+/g, ""));
+        if (name === "dance") fieldValid = val.length >= 3;
+        if (wrap) wrap.classList.toggle("error", !fieldValid);
+        if (!fieldValid) valid = false;
+      });
+
+      if (!valid) {
+        showToast("Please check the highlighted fields.", true);
+        return;
+      }
+
+      const entry = {
+        eventId: "general",
+        eventName: "General Membership",
+        name: values.name,
+        rollNo: values.rollNo,
+        department: values.department,
+        course: values.course,
+        year: values.year,
+        semester: values.semester,
+        phone: values.phone,
+        dance: values.dance,
+        submittedAt: new Date().toISOString(),
+      };
+
+      saveRegistration(entry);
+      form.reset();
+      form.style.display = "none";
+      if (successCard) {
+        const msg = document.getElementById("membershipSuccessDetails");
+        if (msg) msg.textContent = `Welcome ${values.name}! Your General Club Membership registration (Roll No: ${values.rollNo}) has been saved in the official society records.`;
+        successCard.classList.add("show");
+      }
+      showToast("General Club Membership registration submitted!");
+    });
+  }
+
+  /* ---------------------------------------------------------
      Real-time Storage & PageShow Event Syncing
      --------------------------------------------------------- */
   window.addEventListener("storage", function (e) {
@@ -1245,5 +1303,6 @@
     initPresidentPortal();
     renderEventsSection();
     initSeparateEventRegistrationPage();
+    initSeparateClubMembershipPage();
   });
 })();

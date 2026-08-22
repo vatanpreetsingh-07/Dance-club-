@@ -22,8 +22,8 @@
     <a href="#styles">What We Dance</a>
     <a href="#team">Core Team</a>
     <a href="#events">Upcoming Events</a>
-    <a href="event-register.html" style="color:var(--gold);">Register For Event ↗</a>
-    <a href="#join">Join The Club</a>
+    <a href="club-join.html" style="color:var(--gold);">Join Membership ↗</a>
+    <a href="event-register.html">Register For Event ↗</a>
     <a href="president.html" class="cta">President Portal</a>
   </div>
 </nav>
@@ -59,7 +59,7 @@
   <h1 class="reveal-zoom">MOVE ON <em>BEAT.</em><br>SWING THE <em>ROOM.</em></h1>
   <p class="lede reveal-up">Step & Swing is the campus home for rhythm-first dancers — from sharp, percussive step routines to loose, joyful swing. No auditions to join. Just fill in your details and we'll take it from there.</p>
   <div class="actions reveal-up" style="transition-delay:.15s;">
-    <a href="#join" class="btn">Join The Club</a>
+    <a href="club-join.html" class="btn">Join Club Membership ↗</a>
     <a href="event-register.html" class="btn ghost">Register For Event ↗</a>
   </div>
 
@@ -322,62 +322,30 @@
   </div>
   <div class="wrap">
     <div class="section-head reveal-left">
-      <span class="eyebrow">04 — General Membership</span>
-      <h2>Join Step &amp; Swing Club</h2>
-      <p>Fill in your details below to become an official member of Step &amp; Swing Dance Club. <i>Looking to register for a specific upcoming workshop or competition? <a href="event-register.html" style="color:var(--gold); text-decoration:underline;"><b>Open Event Registration Page ↗</b></a></i></p>
+      <span class="eyebrow">04 — Dedicated Registrations</span>
+      <h2>Student Registrations</h2>
+      <p>Whether you want to join as an active club member for the full semester or register for a specific upcoming workshop/battle, choose your dedicated registration page below.</p>
     </div>
 
-    <form id="regForm" class="form-panel reveal-up" novalidate>
-      <input type="hidden" name="eventId" value="general">
-      <div class="form-grid">
-        <div class="field" data-field="name">
-          <label for="name">Full Name</label>
-          <input type="text" id="name" name="name" placeholder="e.g. Ananya Sharma" autocomplete="name">
-          <span class="err-msg">Please enter your full name.</span>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:24px; margin-bottom:40px;">
+      <div class="form-panel reveal-zoom" style="padding:32px 24px; display:flex; flex-direction:column; justify-content:space-between;">
+        <div>
+          <span class="category-badge">General Membership</span>
+          <h3 style="font-size:26px; margin:12px 0; color:var(--text);">Join Club Membership</h3>
+          <p style="font-size:14px; color:var(--muted); line-height:1.6; margin-bottom:24px;">Register for official student membership in Step &amp; Swing Dance Club. Access weekly practices, certificates, and choreography teams.</p>
         </div>
-        <div class="field" data-field="rollNo">
-          <label for="rollNo">Roll Number</label>
-          <input type="text" id="rollNo" name="rollNo" placeholder="e.g. 2509301043">
-          <span class="err-msg">Please enter your roll number.</span>
-        </div>
-        <div class="field" data-field="department">
-          <label for="department">Department</label>
-          <input type="text" id="department" name="department" placeholder="e.g. Computer Applications">
-          <span class="err-msg">Please enter your department.</span>
-        </div>
-        <div class="field" data-field="course">
-          <label for="course">Course</label>
-          <input type="text" id="course" name="course" placeholder="e.g. BCA (AI/ML)">
-          <span class="err-msg">Please enter your course.</span>
-        </div>
-        <div class="field" data-field="year">
-          <label for="year">Year</label>
-          <input type="text" id="year" name="year" placeholder="e.g. 1st Year">
-          <span class="err-msg">Please enter your year of study.</span>
-        </div>
-        <div class="field" data-field="semester">
-          <label for="semester">Semester</label>
-          <input type="text" id="semester" name="semester" placeholder="e.g. 2nd Semester">
-          <span class="err-msg">Please enter your current semester.</span>
-        </div>
-        <div class="field" data-field="phone">
-          <label for="phone">Phone Number</label>
-          <input type="tel" id="phone" name="phone" placeholder="e.g. 9876543210" autocomplete="tel">
-          <span class="hint">10-digit mobile number</span>
-          <span class="err-msg">Please enter a valid 10-digit phone number.</span>
-        </div>
-        <div class="field full" data-field="dance">
-          <label for="dance">Dance Styles You'd Like To Do</label>
-          <textarea id="dance" name="dance" placeholder="Tell us in your own words — e.g. I'd love to learn Lindy Hop swing and get better at step routines for stage performances."></textarea>
-          <span class="err-msg">Tell us a little about what you'd like to dance.</span>
-        </div>
+        <a href="club-join.html" class="btn" style="text-align:center;">Open Membership Registration Form ↗</a>
       </div>
 
-      <div class="form-foot">
-        <p class="form-note">By submitting, you agree to be contacted by the club president regarding practice schedules and events.</p>
-        <button type="submit" class="btn">Submit Registration</button>
+      <div class="form-panel reveal-zoom" style="padding:32px 24px; display:flex; flex-direction:column; justify-content:space-between; transition-delay:.15s;">
+        <div>
+          <span class="category-badge">Event Specific</span>
+          <h3 style="font-size:26px; margin:12px 0; color:var(--text);">Register For Event</h3>
+          <p style="font-size:14px; color:var(--muted); line-height:1.6; margin-bottom:24px;">Register for upcoming competitions, battles, workshops, or flash mobs published by the President with full event schedule details.</p>
+        </div>
+        <a href="event-register.html" class="btn ghost" style="text-align:center;">Open Event Registration Form ↗</a>
       </div>
-    </form>
+    </div>
   </div>
 </section>
 
