@@ -45,14 +45,17 @@
   function getEvents() {
     try {
       const raw = localStorage.getItem(EVENTS_KEY);
-      if (raw) return JSON.parse(raw);
-      
-      // Default sample events
-      const initial = [
+      let events = [];
+      if (raw) {
+        events = JSON.parse(raw);
+      }
+
+      // Curated list of upcoming events
+      const defaultEvents = [
         {
           id: "evt_1",
           title: "Inter-College Step & Swing Showdown 2026",
-          date: new Date(Date.now() + 86400000 * 7).toISOString(),
+          date: new Date(Date.now() + 86400000 * 5).toISOString(),
           venue: "Geeta University Main Auditorium",
           category: "Competition",
           description: "High-energy rhythm step routines & swing battle open to all students. Certificate of achievement and trophies!",
@@ -61,15 +64,46 @@
         {
           id: "evt_2",
           title: "Beginner Lindy Hop & Body Percussion Workshop",
-          date: new Date(Date.now() + 86400000 * 14).toISOString(),
+          date: new Date(Date.now() + 86400000 * 10).toISOString(),
           venue: "Dance Studio Block B",
           category: "Workshop",
           description: "Learn fundamental 6-count swing footwork and percussive body stomps in an interactive 2-hour intensive session.",
           createdAt: new Date().toISOString()
+        },
+        {
+          id: "evt_3",
+          title: "Annual Campus Flash Mob & Rhythm Showcase",
+          date: new Date(Date.now() + 86400000 * 16).toISOString(),
+          venue: "University Central Plaza",
+          category: "Showcase",
+          description: "Join the entire Step & Swing crew for our biggest synchronized rhythm performance of the semester across campus plaza.",
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: "evt_4",
+          title: "Hip-Hop & Footwork Freestyle Battle",
+          date: new Date(Date.now() + 86400000 * 22).toISOString(),
+          venue: "Student Activity Center Open Stage",
+          category: "Freestyle Battle",
+          description: "1v1 percussive footwork battle with live DJ beat mixing. Cash prizes for best rhythm improvisation!",
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: "evt_5",
+          title: "Couples Social Swing & Salsa Night",
+          date: new Date(Date.now() + 86400000 * 28).toISOString(),
+          venue: "Amphitheatre Outdoor Ground",
+          category: "Social Dance",
+          description: "An evening of social swing partner dancing, Latin step fusion, live music, and refreshments.",
+          createdAt: new Date().toISOString()
         }
       ];
-      localStorage.setItem(EVENTS_KEY, JSON.stringify(initial));
-      return initial;
+
+      if (!events || !events.length) {
+        localStorage.setItem(EVENTS_KEY, JSON.stringify(defaultEvents));
+        return defaultEvents;
+      }
+      return events;
     } catch (e) {
       console.error("Could not read events:", e);
       return [];
