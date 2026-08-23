@@ -1299,8 +1299,21 @@ function initSeparateClubMembershipPage() {
         const msg = document.getElementById("membershipSuccessDetails");
         if (msg) msg.textContent = `Welcome ${values.name}! Your General Club Membership registration (Roll No: ${values.rollNo}) has been saved in the official society records.`;
         successCard.classList.add("show");
+
+        // Auto-redirect to WhatsApp group after 5-second countdown
+        const WHATSAPP_URL = "https://chat.whatsapp.com/C3oC6Vu45fiAd7KA0b0rTk";
+        const countdownEl = document.getElementById("waCountdown");
+        let seconds = 5;
+        const waTimer = setInterval(() => {
+          seconds--;
+          if (countdownEl) countdownEl.textContent = seconds;
+          if (seconds <= 0) {
+            clearInterval(waTimer);
+            window.open(WHATSAPP_URL, "_blank", "noopener,noreferrer");
+          }
+        }, 1000);
       }
-      showToast("Club Membership registration submitted!");
+      showToast("Club Membership registration submitted! Redirecting to WhatsApp…");
     } catch (err) {
       showToast("Error saving membership. Please try again.", true);
       console.error(err);
