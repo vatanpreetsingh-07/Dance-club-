@@ -6,6 +6,60 @@
 <title>Freshers Registration — Step &amp; Swing Dance Club</title>
 <link rel="stylesheet" href="style.css">
 <style>
+  /* Dance Category Radio Cards */
+  .dance-category-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 4px;
+  }
+  .dance-category-group input[type="radio"] {
+    display: none;
+  }
+  .dance-cat-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 18px 12px;
+    background: var(--panel);
+    border: 2px solid var(--line);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    text-align: center;
+    user-select: none;
+  }
+  .dance-cat-label:hover {
+    border-color: var(--gold);
+    background: var(--panel-2);
+    transform: translateY(-2px);
+  }
+  .dance-category-group input[type="radio"]:checked + .dance-cat-label {
+    border-color: var(--gold);
+    background: rgba(212,175,55,0.08);
+    box-shadow: 0 0 0 3px rgba(212,175,55,0.18);
+  }
+  .dance-cat-label .cat-icon {
+    font-size: 28px;
+    line-height: 1;
+  }
+  .dance-cat-label .cat-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .dance-cat-label .cat-desc {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.4;
+  }
+  @media (max-width: 480px) {
+    .dance-category-group { grid-template-columns: 1fr; }
+  }
+
   .membership-hero-banner {
     position: relative;
     padding: 60px 28px 40px;
@@ -210,6 +264,38 @@
         <input type="tel" id="phone" name="phone" placeholder="e.g. 9876543210" autocomplete="tel" required>
         <span class="hint">10-digit mobile number</span>
         <span class="err-msg">Please enter a valid 10-digit mobile number.</span>
+      </div>
+
+      <!-- Dance Category -->  
+      <div class="field full" data-field="danceCategory">
+        <label>Dance Category *</label>
+        <div class="dance-category-group">
+          <div>
+            <input type="radio" id="catSolo" name="danceCategory" value="Solo">
+            <label class="dance-cat-label" for="catSolo">
+              <span class="cat-icon">🕺</span>
+              <span class="cat-name">Solo</span>
+              <span class="cat-desc">Performing alone on stage</span>
+            </label>
+          </div>
+          <div>
+            <input type="radio" id="catDuet" name="danceCategory" value="Duet">
+            <label class="dance-cat-label" for="catDuet">
+              <span class="cat-icon">👫</span>
+              <span class="cat-name">Duet</span>
+              <span class="cat-desc">Partnered performance of two</span>
+            </label>
+          </div>
+          <div>
+            <input type="radio" id="catGroup" name="danceCategory" value="Group">
+            <label class="dance-cat-label" for="catGroup">
+              <span class="cat-icon">👯</span>
+              <span class="cat-name">Group</span>
+              <span class="cat-desc">Team choreography, 3+ members</span>
+            </label>
+          </div>
+        </div>
+        <span class="err-msg">Please select a dance category.</span>
       </div>
 
       <div class="field full" data-field="dance">

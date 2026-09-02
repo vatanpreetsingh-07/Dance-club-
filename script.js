@@ -1279,6 +1279,17 @@ function initSeparateClubMembershipPage() {
       if (!fieldValid) valid = false;
     });
 
+    // Validate dance category radio
+    const selectedCategory = form.querySelector('input[name="danceCategory"]:checked');
+    const categoryWrap = form.querySelector('[data-field="danceCategory"]');
+    if (!selectedCategory) {
+      if (categoryWrap) categoryWrap.classList.add("error");
+      valid = false;
+    } else {
+      if (categoryWrap) categoryWrap.classList.remove("error");
+      values.danceCategory = selectedCategory.value;
+    }
+
     if (!valid) { showToast("Please check the highlighted fields.", true); return; }
 
     const entry = {
@@ -1287,7 +1298,9 @@ function initSeparateClubMembershipPage() {
       name: values.name, rollNo: values.rollNo,
       department: values.department, course: values.course,
       year: values.year, semester: values.semester,
-      phone: values.phone, dance: values.dance,
+      phone: values.phone,
+      danceCategory: values.danceCategory,
+      dance: values.dance,
       submittedAt: new Date().toISOString()
     };
 
