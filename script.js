@@ -1282,8 +1282,8 @@ function initSeparateClubMembershipPage() {
     if (!valid) { showToast("Please check the highlighted fields.", true); return; }
 
     const entry = {
-      eventId: "general",
-      eventName: "General Membership",
+      eventId: "freshers",
+      eventName: "Freshers Registration",
       name: values.name, rollNo: values.rollNo,
       department: values.department, course: values.course,
       year: values.year, semester: values.semester,
@@ -1297,7 +1297,7 @@ function initSeparateClubMembershipPage() {
       form.style.display = "none";
       if (successCard) {
         const msg = document.getElementById("membershipSuccessDetails");
-        if (msg) msg.textContent = `Welcome ${values.name}! Your General Club Membership registration (Roll No: ${values.rollNo}) has been saved in the official society records.`;
+        if (msg) msg.textContent = `Welcome ${values.name}! Your Freshers Registration (Roll No: ${values.rollNo}) has been saved in the official society records.`;
         successCard.classList.add("show");
 
         // Auto-redirect to WhatsApp group after 5-second countdown
