@@ -60,6 +60,88 @@
     .dance-category-group { grid-template-columns: 1fr; }
   }
 
+  /* ── Dance Theme Radio Cards ─────────────────────────────── */
+  .dance-theme-group {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 12px;
+    margin-top: 4px;
+  }
+  .dance-theme-group input[type="radio"] {
+    display: none;
+  }
+  .dance-theme-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 22px 10px 18px;
+    background: var(--panel);
+    border: 2px solid var(--line);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.22s, background 0.22s, transform 0.18s, box-shadow 0.22s;
+    text-align: center;
+    user-select: none;
+    position: relative;
+    overflow: hidden;
+  }
+  .dance-theme-label::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--theme-accent, var(--gold));
+    opacity: 0;
+    transition: opacity 0.22s;
+  }
+  .dance-theme-label:hover {
+    background: var(--panel-2);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    border-color: var(--theme-accent, var(--gold));
+  }
+  .dance-theme-label:hover::before { opacity: 1; }
+  .dance-theme-group input[type="radio"]:checked + .dance-theme-label {
+    border-color: var(--theme-accent, var(--gold));
+    background: rgba(var(--theme-accent-rgb, 212,166,58), 0.07);
+    box-shadow: 0 0 0 3px rgba(var(--theme-accent-rgb, 212,166,58), 0.2);
+  }
+  .dance-theme-group input[type="radio"]:checked + .dance-theme-label::before { opacity: 1; }
+  .dance-theme-label .theme-icon {
+    font-size: 34px;
+    line-height: 1;
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));
+    transition: transform 0.2s;
+  }
+  .dance-theme-label:hover .theme-icon {
+    transform: scale(1.18) rotate(-4deg);
+  }
+  .dance-theme-label .theme-name {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--theme-accent, var(--gold));
+  }
+  .dance-theme-label .theme-desc {
+    font-size: 10.5px;
+    color: var(--muted);
+    line-height: 1.45;
+  }
+  /* Per-theme accent colours */
+  .theme-horror  { --theme-accent: #9B59B6; --theme-accent-rgb: 155,89,182; }
+  .theme-bollywood { --theme-accent: #E91E8C; --theme-accent-rgb: 233,30,140; }
+  .theme-bhangra { --theme-accent: #F57C00; --theme-accent-rgb: 245,124,0; }
+  .theme-hiphop  { --theme-accent: #00BCD4; --theme-accent-rgb: 0,188,212; }
+  .theme-couple  { --theme-accent: #E53935; --theme-accent-rgb: 229,57,53; }
+  @media (max-width: 680px) {
+    .dance-theme-group { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 420px) {
+    .dance-theme-group { grid-template-columns: repeat(2, 1fr); }
+  }
+
   .membership-hero-banner {
     position: relative;
     padding: 60px 28px 40px;
@@ -296,6 +378,60 @@
           </div>
         </div>
         <span class="err-msg">Please select a dance category.</span>
+      </div>
+
+      <!-- Dance Theme -->
+      <div class="field full" data-field="danceTheme">
+        <label>Dance Theme *</label>
+        <div class="dance-theme-group">
+
+          <div>
+            <input type="radio" id="themeHorror" name="danceTheme" value="Horror">
+            <label class="dance-theme-label theme-horror" for="themeHorror">
+              <span class="theme-icon">💀</span>
+              <span class="theme-name">Horror</span>
+              <span class="theme-desc">Dark, chilling moves &amp; gothic drama</span>
+            </label>
+          </div>
+
+          <div>
+            <input type="radio" id="themeBollywood" name="danceTheme" value="Bollywood">
+            <label class="dance-theme-label theme-bollywood" for="themeBollywood">
+              <span class="theme-icon">🎬</span>
+              <span class="theme-name">Bollywood</span>
+              <span class="theme-desc">Filmy expressions &amp; Desi energy</span>
+            </label>
+          </div>
+
+          <div>
+            <input type="radio" id="themeBhangra" name="danceTheme" value="Bhangra">
+            <label class="dance-theme-label theme-bhangra" for="themeBhangra">
+              <span class="theme-icon">🥁</span>
+              <span class="theme-name">Bhangra</span>
+              <span class="theme-desc">Punjabi folk beats &amp; high energy</span>
+            </label>
+          </div>
+
+          <div>
+            <input type="radio" id="themeHiphop" name="danceTheme" value="Hip Hop">
+            <label class="dance-theme-label theme-hiphop" for="themeHiphop">
+              <span class="theme-icon">🎤</span>
+              <span class="theme-name">Hip Hop</span>
+              <span class="theme-desc">Street style, freestyle &amp; swag</span>
+            </label>
+          </div>
+
+          <div>
+            <input type="radio" id="themeCouple" name="danceTheme" value="Couple Dance">
+            <label class="dance-theme-label theme-couple" for="themeCouple">
+              <span class="theme-icon">❤️</span>
+              <span class="theme-name">Couple Dance</span>
+              <span class="theme-desc">Romantic partner choreography</span>
+            </label>
+          </div>
+
+        </div>
+        <span class="err-msg">Please select a dance theme.</span>
       </div>
 
       <div class="field full" data-field="dance">

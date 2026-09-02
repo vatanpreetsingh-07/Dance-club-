@@ -713,6 +713,8 @@ function exportToExcel(records, filenamePrefix) {
     "Year":        r.year,
     "Semester":    r.semester,
     "Phone No":    r.phone,
+    "Dance Category": r.danceCategory || "",
+    "Dance Theme":  r.danceTheme || "",
     "Dance Styles": r.dance,
     "Submitted On": r.submittedAt ? new Date(r.submittedAt).toLocaleString() : ""
   }));
@@ -720,7 +722,7 @@ function exportToExcel(records, filenamePrefix) {
   const ws = XLSX.utils.json_to_sheet(rows);
   ws["!cols"] = [
     { wch: 6 }, { wch: 30 }, { wch: 22 }, { wch: 14 }, { wch: 22 },
-    { wch: 18 }, { wch: 10 }, { wch: 12 }, { wch: 14 }, { wch: 40 }, { wch: 20 }
+    { wch: 18 }, { wch: 10 }, { wch: 12 }, { wch: 14 }, { wch: 16 }, { wch: 16 }, { wch: 40 }, { wch: 20 }
   ];
 
   const wb = XLSX.utils.book_new();
@@ -1290,6 +1292,17 @@ function initSeparateClubMembershipPage() {
       values.danceCategory = selectedCategory.value;
     }
 
+    // Validate dance theme radio
+    const selectedTheme = form.querySelector('input[name="danceTheme"]:checked');
+    const themeWrap = form.querySelector('[data-field="danceTheme"]');
+    if (!selectedTheme) {
+      if (themeWrap) themeWrap.classList.add("error");
+      valid = false;
+    } else {
+      if (themeWrap) themeWrap.classList.remove("error");
+      values.danceTheme = selectedTheme.value;
+    }
+
     if (!valid) { showToast("Please check the highlighted fields.", true); return; }
 
     const entry = {
@@ -1300,6 +1313,7 @@ function initSeparateClubMembershipPage() {
       year: values.year, semester: values.semester,
       phone: values.phone,
       danceCategory: values.danceCategory,
+      danceTheme: values.danceTheme,
       dance: values.dance,
       submittedAt: new Date().toISOString()
     };
