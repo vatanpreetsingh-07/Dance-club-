@@ -317,7 +317,6 @@ function renderEventsSection() {
         </div>
         <p class="desc">${escapeHtml(evt.description || "Join us for this exciting Step & Swing event!")}</p>
       </div>
-      <a href="event-register.html?eventId=${evt.id}" class="btn" style="text-align:center;">Register For This Event →</a>
     `;
     container.appendChild(card);
   });
