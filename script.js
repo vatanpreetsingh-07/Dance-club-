@@ -408,6 +408,14 @@ function renderDashboard() {
     filteredData.forEach((r, i) => {
       const tr = document.createElement("tr");
       const submitted = r.submittedAt ? new Date(r.submittedAt).toLocaleString() : "—";
+      const themeColors = {
+        "Horror":       "#9B59B6",
+        "Bollywood":    "#E91E8C",
+        "Bhangra":      "#F57C00",
+        "Hip Hop":      "#00BCD4",
+        "Couple Dance": "#E53935"
+      };
+      const themeColor = themeColors[r.danceTheme] || "var(--gold)";
       tr.innerHTML = `
         <td>${i + 1}</td>
         <td><b style="color:var(--gold);">${escapeHtml(r.eventName || "General Membership")}</b></td>
@@ -418,6 +426,8 @@ function renderDashboard() {
         <td>${escapeHtml(r.year)}</td>
         <td>${escapeHtml(r.semester)}</td>
         <td>${escapeHtml(r.phone)}</td>
+        <td><span class="category-badge" style="color:var(--gold);">${escapeHtml(r.danceCategory || "—")}</span></td>
+        <td><span class="category-badge" style="color:${themeColor}; border-color:${themeColor}; background:${themeColor}18;">${escapeHtml(r.danceTheme || "—")}</span></td>
         <td>${escapeHtml(r.dance)}</td>
         <td class="mono">${submitted}</td>
         <td>
