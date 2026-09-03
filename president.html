@@ -7,6 +7,106 @@
 <link rel="stylesheet" href="style.css">
 <!-- SheetJS: builds the downloadable .xlsx workbook -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+/* ── Download Filter Modal ── */
+#downloadFilterModal {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  background: rgba(0,0,0,0.72);
+  backdrop-filter: blur(6px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+#downloadFilterModal .dfm-card {
+  background: var(--panel, #151515);
+  border: 1px solid var(--line, #2a2a2a);
+  border-radius: 6px;
+  width: 100%;
+  max-width: 520px;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.7);
+  animation: fadeInDown 0.28s ease;
+}
+#downloadFilterModal .dfm-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--line, #2a2a2a);
+}
+#downloadFilterModal .dfm-head h3 {
+  font-size: 18px;
+  color: var(--gold, #d4af37);
+  margin: 0;
+  letter-spacing: 0.03em;
+}
+#downloadFilterModal .dfm-close {
+  background: none;
+  border: none;
+  color: var(--muted, #888);
+  font-size: 22px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: color 0.18s, background 0.18s;
+}
+#downloadFilterModal .dfm-close:hover { color: var(--text, #eee); background: rgba(255,255,255,0.06); }
+#downloadFilterModal .dfm-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+#downloadFilterModal .dfm-field label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted, #888);
+  margin-bottom: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+}
+#downloadFilterModal .dfm-field select {
+  width: 100%;
+  background: var(--bg, #0a0a0a);
+  color: var(--text, #eee);
+  border: 1px solid var(--line, #2a2a2a);
+  border-radius: 4px;
+  padding: 11px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23888' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  cursor: pointer;
+  transition: border-color 0.18s;
+}
+#downloadFilterModal .dfm-field select:focus {
+  outline: none;
+  border-color: var(--gold, #d4af37);
+}
+#downloadFilterModal .dfm-preview {
+  background: rgba(212,175,55,0.07);
+  border: 1px solid rgba(212,175,55,0.2);
+  border-radius: 4px;
+  padding: 10px 14px;
+  font-size: 13px;
+  color: var(--gold, #d4af37);
+  font-family: 'IBM Plex Mono', monospace;
+  min-height: 36px;
+}
+#downloadFilterModal .dfm-foot {
+  padding: 16px 24px 20px;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  border-top: 1px solid var(--line, #2a2a2a);
+}
+</style>
 </head>
 <body>
 
@@ -52,6 +152,7 @@
     <div class="dash-actions">
       <button id="downloadBtn" class="btn" title="Download Excel sheet with all registrations">Download All Excel</button>
       <button id="downloadGeneralBtn" class="btn ghost" title="Download Excel sheet with General Club Registrations only">General Members Excel</button>
+      <button id="openDownloadFilterModalBtn" class="btn ghost" title="Download Excel filtered by Dance Category &amp; Theme">📂 Filter &amp; Download Excel</button>
       <button id="clearAllBtn" class="btn danger ghost">Clear All</button>
       <button id="logoutBtn" class="btn ghost">Log Out</button>
     </div>
@@ -201,6 +302,47 @@
 <button id="backToTop" class="back-to-top" aria-label="Back to top">↑</button>
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+<!-- ============ DOWNLOAD FILTER MODAL ============ -->
+<div id="downloadFilterModal" role="dialog" aria-modal="true" aria-labelledby="dfmTitle">
+  <div class="dfm-card">
+    <div class="dfm-head">
+      <h3 id="dfmTitle">📊 Filter &amp; Download Excel</h3>
+      <button class="dfm-close" id="closeDfmBtn" aria-label="Close">&times;</button>
+    </div>
+    <div class="dfm-body">
+      <p style="font-size:13.5px; color:var(--muted); margin:0 0 4px;">Choose a <b style="color:var(--text)">Dance Category</b> and/or <b style="color:var(--text)">Dance Theme</b> to export a focused Excel file. Leave a filter on <em>"All"</em> to include every value for that field.</p>
+
+      <div class="dfm-field">
+        <label for="dfmCategory">Dance Category</label>
+        <select id="dfmCategory">
+          <option value="all">All Categories</option>
+          <option value="Solo">🕺 Solo — Performing alone on stage</option>
+          <option value="Duet">👫 Duet — Partnered performance of two</option>
+          <option value="Group">👯 Group — Team choreography (3+ members)</option>
+        </select>
+      </div>
+
+      <div class="dfm-field">
+        <label for="dfmTheme">Dance Theme</label>
+        <select id="dfmTheme">
+          <option value="all">All Themes</option>
+          <option value="Horror">💀 Horror — Dark, chilling moves &amp; gothic drama</option>
+          <option value="Bollywood">🎬 Bollywood — Filmy expressions &amp; Desi energy</option>
+          <option value="Bhangra">🥁 Bhangra — Punjabi folk beats &amp; high energy</option>
+          <option value="Hip Hop">🎤 Hip Hop — Street style, freestyle &amp; swag</option>
+          <option value="Couple Dance">❤️ Couple Dance — Romantic partner choreography</option>
+        </select>
+      </div>
+
+      <div class="dfm-preview" id="dfmPreview">← Select filters above to preview the match count</div>
+    </div>
+    <div class="dfm-foot">
+      <button id="cancelDfmBtn" class="btn ghost">Cancel</button>
+      <button id="confirmDfmBtn" class="btn">⬇ Download Excel</button>
+    </div>
+  </div>
+</div>
 
 <!-- Edit Event Modal Overlay -->
 <div id="editEventModal" class="modal-overlay" style="display:none;">

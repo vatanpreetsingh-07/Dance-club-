@@ -1358,6 +1358,109 @@ function initSeparateClubMembershipPage() {
 }
 
 /* ─────────────────────────────────────────────────────────────
+   PRESIDENT PORTAL — DOWNLOAD FILTER MODAL
+   Choose Dance Category (Solo / Duet / Group) and/or
+   Dance Theme (Horror / Bollywood / Bhangra / Hip Hop / Couple Dance)
+   then export a focused Excel file.
+   ───────────────────────────────────────────────────────────── */
+function initDownloadFilterModal() {
+  const modal      = document.getElementById("downloadFilterModal");
+  const openBtn    = document.getElementById("openDownloadFilterModalBtn");
+  const closeBtn   = document.getElementById("closeDfmBtn");
+  const cancelBtn  = document.getElementById("cancelDfmBtn");
+  const confirmBtn = document.getElementById("confirmDfmBtn");
+  const catSelect  = document.getElementById("dfmCategory");
+  const themeSelect = document.getElementById("dfmTheme");
+  const preview    = document.getElementById("dfmPreview");
+
+  if (!modal || !openBtn) return;
+
+  /* ── Helper: get filtered records ── */
+  function getFiltered() {
+    const cat   = catSelect   ? catSelect.value   : "all";
+    const theme = themeSelect ? themeSelect.value : "all";
+
+    return _registrations.filter(r => {
+      const catMatch   = (cat   === "all") || ((r.danceCategory || "") === cat);
+      const themeMatch = (theme === "all") || ((r.danceTheme    || "") === theme);
+      return catMatch && themeMatch;
+    });
+  }
+
+  /* ── Helper: build filename ── */
+  function buildFilename() {
+    const cat   = catSelect   ? catSelect.value   : "all";
+    const theme = themeSelect ? themeSelect.value : "all";
+    const catPart   = cat   !== "all" ? cat   : "AllCategories";
+    const themePart = theme !== "all" ? theme : "AllThemes";
+    return `StepAndSwing_${catPart}_${themePart}`;
+  }
+
+  /* ── Update live preview ── */
+  function updatePreview() {
+    if (!preview) return;
+    const cat   = catSelect   ? catSelect.value   : "all";
+    const theme = themeSelect ? themeSelect.value : "all";
+    const count = getFiltered().length;
+
+    const catLabel   = (cat   === "all") ? "All Categories" : cat;
+    const themeLabel = (theme === "all") ? "All Themes"     : theme;
+
+    if (count === 0) {
+      preview.style.color = "var(--muted, #888)";
+      preview.textContent = `No registrations found for "${catLabel}" · "${themeLabel}"`;
+    } else {
+      preview.style.color = "var(--gold, #d4af37)";
+      preview.textContent = `✓ ${count} registration${count !== 1 ? "s" : ""} match "${catLabel}" · "${themeLabel}"`;
+    }
+  }
+
+  /* ── Open / Close ── */
+  function openModal() {
+    if (catSelect)   catSelect.value   = "all";
+    if (themeSelect) themeSelect.value = "all";
+    updatePreview();
+    modal.style.display = "flex";
+    setTimeout(() => { if (catSelect) catSelect.focus(); }, 80);
+  }
+
+  function closeModal() {
+    modal.style.display = "none";
+  }
+
+  openBtn.addEventListener("click", openModal);
+  if (closeBtn)  closeBtn.addEventListener("click",  closeModal);
+  if (cancelBtn) cancelBtn.addEventListener("click", closeModal);
+
+  // Close on backdrop click
+  modal.addEventListener("click", function (e) {
+    if (e.target === modal) closeModal();
+  });
+
+  // Keyboard: Escape closes
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && modal.style.display === "flex") closeModal();
+  });
+
+  // Live preview as filters change
+  if (catSelect)   catSelect.addEventListener("change",   updatePreview);
+  if (themeSelect) themeSelect.addEventListener("change", updatePreview);
+
+  /* ── Download ── */
+  if (confirmBtn) {
+    confirmBtn.addEventListener("click", function () {
+      const records = getFiltered();
+      if (!records.length) {
+        showToast("No registrations match the selected filters.", true);
+        return;
+      }
+      exportToExcel(records, buildFilename());
+      closeModal();
+    });
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
    BOOTSTRAP — DOMContentLoaded
    ───────────────────────────────────────────────────────────── */
 document.addEventListener("DOMContentLoaded", function () {
@@ -1367,6 +1470,7 @@ document.addEventListener("DOMContentLoaded", function () {
   initRegistrationForm();
   initPresidentPortal();
   initEditModal();
+  initDownloadFilterModal();
   initSeparateEventRegistrationPage();
   initSeparateClubMembershipPage();
 
